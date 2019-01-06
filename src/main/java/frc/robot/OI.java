@@ -7,10 +7,13 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.GenericHID.Hand;
+
+import frc.robot.commands.DriveTrainHighShiftCommand;
+import frc.robot.commands.DriveTrainLowShiftCommand;
+
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.command.Command;
 
@@ -25,6 +28,12 @@ public class OI {
   //Creates joystick objects for use
   leftJoy = new Joystick(RobotMap.LEFT_JOYSTICK);
   rightJoy = new Joystick(RobotMap.RIGHT_JOYSTICK);
+
+    //Left joystick buttons
+		setJoystickButtonWhenPressedCommand(leftJoy, 1, new DriveTrainLowShiftCommand());
+		
+		//Right joystick buttons
+		setJoystickButtonWhenPressedCommand(rightJoy, 1, new DriveTrainHighShiftCommand());
 
   }
 
@@ -46,6 +55,10 @@ public double getRightY() {
 //Gets the X direction of the right drive joystick
 public double getRightX() {
   return rightJoy.getX();
+}
+
+private void setJoystickButtonWhenPressedCommand(GenericHID joystick, int button, Command command) {
+  new JoystickButton(joystick, button).whenPressed(command);
 }
 
 };

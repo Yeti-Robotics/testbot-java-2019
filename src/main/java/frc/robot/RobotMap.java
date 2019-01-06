@@ -37,4 +37,7 @@ public class RobotMap {
   // Encoders
   public static final int[] DRIVE_LEFT_ENCODER = { 1, 0 };
   public static final int[] DRIVE_RIGHT_ENCODER = { 2, 3 };
+
+  // Drive train solenoid
+	public static final int[] DRIVE_TRAIN_SHIFT = { 6, 7 };
 }

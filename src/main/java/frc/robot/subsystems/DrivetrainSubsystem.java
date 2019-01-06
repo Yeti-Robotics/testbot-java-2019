@@ -96,7 +96,9 @@ public class DrivetrainSubsystem extends Subsystem {
     // Controls the right side of the drive train
 	public void moveDriveTrainRight(double power) {
 		right1.set(power);
-		right2.set(power);
+        right2.set(power);
+        
+        
     }
     
     // Controls the left side of the drive train

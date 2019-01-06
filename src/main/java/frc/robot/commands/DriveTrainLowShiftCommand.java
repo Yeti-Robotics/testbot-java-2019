@@ -6,10 +6,10 @@ import frc.robot.Robot;
 /**
  * An example command.  You can replace me with your own command.
  */
-public class DriveCommand extends Command {
-  public ExampleCommand() {
+public class DriveTrainLowShiftCommand extends Command {
+  public DriveTrainLowShiftCommand() {
     // Use requires() here to declare subsystem dependencies
-    requires(Robot.drivetrainSubsystem);
+    requires(Robot.shiftGearsSubsystem);
   }
 
   // Called just before this Command runs the first time
@@ -20,12 +20,13 @@ public class DriveCommand extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
+      Robot.shiftGearsSubsystem.shiftDown();
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return false;
+    return true;
   }
 
   // Called once after isFinished returns true

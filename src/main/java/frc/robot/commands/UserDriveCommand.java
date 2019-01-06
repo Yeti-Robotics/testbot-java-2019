@@ -13,16 +13,9 @@ import frc.robot.Robot;
 /**
  * An example command.  You can replace me with your own command.
  */
-<<<<<<< HEAD
 public class UserDriveCommand extends Command {
   public UserDriveCommand() {
       requires(Robot.drivetrainSubsystem);
-=======
-public class ExampleCommand extends Command {
-  public ExampleCommand() {
-    // Use requires() here to declare subsystem dependencies
-    requires(Robot.m_subsystem);
->>>>>>> 5382c306f042524084ee4a8066e554956ce4af6c
   }
 
   // Called just before this Command runs the first time
@@ -33,7 +26,6 @@ public class ExampleCommand extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-<<<<<<< HEAD
     switch (Robot.drivetrainSubsystem.getDriveMode()) {
       case TANK: 
           Robot.drivetrainSubsystem.tankDrive(-Robot.oi.getLeftY(), -Robot.oi.getRightY());
@@ -47,8 +39,6 @@ public class ExampleCommand extends Command {
             Robot.drivetrainSubsystem.cheezyDrive(-Robot.oi.getLeftX(), Robot.oi.getLeftY());
          break;
   }
-=======
->>>>>>> 5382c306f042524084ee4a8066e554956ce4af6c
   }
 
   // Make this return true when this Command no longer needs to run execute()

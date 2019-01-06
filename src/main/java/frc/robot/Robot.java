@@ -16,6 +16,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.UserDriveCommand;
 import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.ShiftGearsSubsystem;
+
+import edu.wpi.first.wpilibj.DriverStation;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -29,7 +32,9 @@ public class Robot extends TimedRobot {
   public static OI oi;
 
   // Instantiates the subsystems
-	public static DrivetrainSubsystem drivetrainSubsystem;
+  public static DrivetrainSubsystem drivetrainSubsystem;
+  public static ShiftGearsSubsystem shiftGearsSubsystem;
+  public static DriverStation driverStation;
 
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -40,7 +45,11 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    drivetrainSubsystem = new DrivetrainSubsystem();
+    shiftGearsSubsystem = new ShiftGearsSubsystem();
+    driverStation = DriverStation.getInstance();
     oi = new OI();
+    
     m_chooser.setDefaultOption("Default Auto", new UserDriveCommand());
     // chooser.addOption("My Auto", new MyAutoCommand());
     SmartDashboard.putData("Auto mode", m_chooser);
@@ -85,7 +94,13 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    String gameData = DriverStation.getInstance().getGameSpecificMessage(); //gets game data
+        System.out.println("Char: " + gameData.charAt(0));
+        System.out.println(m_chooser.getSelected());
+    
     m_autonomousCommand = m_chooser.getSelected();
+
+    
 
     /*
      * String autoSelected = SmartDashboard.getString("Auto Selector",

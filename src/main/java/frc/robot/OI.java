@@ -30,10 +30,10 @@ public class OI {
   rightJoy = new Joystick(RobotMap.RIGHT_JOYSTICK);
 
     //Left joystick buttons
-		setJoystickButtonWhenPressedCommand(leftJoy, 1, new DriveTrainLowShiftCommand());
+		setJoystickButtonWhenPressedCommand(leftJoy, 1, new DriveTrainHighShiftCommand());
 		
 		//Right joystick buttons
-		setJoystickButtonWhenPressedCommand(rightJoy, 1, new DriveTrainHighShiftCommand());
+		setJoystickButtonWhenPressedCommand(rightJoy, 1, new DriveTrainLowShiftCommand());
 
   }
 

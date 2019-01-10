@@ -40,6 +40,8 @@ public class DrivetrainSubsystem extends Subsystem {
         SpeedControllerGroup leftSparks = new SpeedControllerGroup(left1, left2);
         SpeedControllerGroup rightSparks = new SpeedControllerGroup(right1, right2);
         
+        
+        
         differentialDrive = new DifferentialDrive(leftSparks, rightSparks);
 
         // Creates encoder objects connected to their respective DIO ports
@@ -52,8 +54,9 @@ public class DrivetrainSubsystem extends Subsystem {
         rightEnc.setDistancePerPulse(frc.robot.RobotMap.DISTANCE_PER_PULSE);
         rightEnc.setPIDSourceType(PIDSourceType.kDisplacement);
 
+        leftTal.setInverted(true);
+        left1.setInverted(true);
         left2.setInverted(true);
-        right1.setInverted(true);
         
         SmartDashboard.putNumber("Left drive distance", getLeftEncoderValue());
 		SmartDashboard.putNumber("Right drive distance", getRightEncoderValue());
@@ -97,14 +100,15 @@ public class DrivetrainSubsystem extends Subsystem {
 	public void moveDriveTrainRight(double power) {
 		right1.set(power);
         right2.set(power);
-        
+        rightTal.set(ControlMode.PercentOutput, power);
         
     }
     
     // Controls the left side of the drive train
 	public void moveDriveTrainLeft(double power) {
 		left1.set(power);
-		left2.set(power);
+        left2.set(power);
+        leftTal.set(ControlMode.PercentOutput, power);
     }
     
     public void tankDrive(double left, double right) {

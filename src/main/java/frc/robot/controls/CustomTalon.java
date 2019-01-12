@@ -10,12 +10,14 @@ package frc.robot.controls;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.SpeedController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 
 /**
  * Add your docs here.
  */
-public class CustomTalon extends TalonSRX implements SpeedController {
+public class CustomTalon extends TalonSRX implements SpeedController, Sendable {
 
     private double currentSpeed;
 
@@ -48,4 +50,29 @@ public class CustomTalon extends TalonSRX implements SpeedController {
     public void stopMotor() {
         set(0);
     }
+
+    @Override
+    public String getName() {
+        return CustomTalon.class.getSimpleName();
+    }
+
+    @Override
+    public void setName(String name) {
+
+    }
+
+    @Override
+    public String getSubsystem() {
+        return null;
+    }
+
+    @Override
+    public void setSubsystem(String subsystem) {
+
+    }
+
+    @Override
+    public void initSendable(SendableBuilder builder) {
+        builder.addDoubleProperty("speed", () -> get(), d -> set(d));
+	}
 }

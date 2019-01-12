@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.SpeedController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
 
 /**
- * Add your docs here.
+ * Custom TalonSRX which allows it to be treated as a SpeedController
  */
 public class CustomTalon extends TalonSRX implements SpeedController, Sendable {
 

@@ -125,6 +125,14 @@ public class DrivetrainSubsystem extends Subsystem {
     
     public void initDefaultCommand() {
 		setDefaultCommand(new UserDriveCommand());
-	}
+    }
+    
+    public int getRightPulsesPerRevolution() {
+        return rightEnc.getRaw();
+    }
+
+    public int getLeftPulsesPerRevolution() {
+        return leftEnc.getRaw();
+    }
 
 };

@@ -6,7 +6,6 @@ import frc.robot.commands.DriveForDistanceCommand;
 import frc.robot.commands.DriveTrainLowShiftCommand;
 import frc.robot.commands.DriveTrainHighShiftCommand;
 
-
 public class DriveForwardAuto extends CommandGroup {
 
     public DriveForwardAuto() {

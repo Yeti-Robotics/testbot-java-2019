@@ -2,7 +2,7 @@ package frc.robot.subsystems;
 
 import frc.robot.RobotMap;
 import frc.robot.commands.UserDriveCommand;
-
+import frc.robot.controls.CustomTalon;
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PIDSourceType;
@@ -11,13 +11,12 @@ import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
 public class DrivetrainSubsystem extends Subsystem {
 
     private Spark left1, left2, right1, right2;
-    private TalonSRX leftTal, rightTal;
+    private CustomTalon leftTal, rightTal;
     private Encoder leftEnc, rightEnc;
     private DifferentialDrive differentialDrive;
     private DriveMode driveMode;
@@ -29,32 +28,29 @@ public class DrivetrainSubsystem extends Subsystem {
 
     public DrivetrainSubsystem() {
 
-        left1 = new Spark(frc.robot.RobotMap.LEFT_1_SPARK);
-		left2 = new Spark(frc.robot.RobotMap.LEFT_2_SPARK);
-		right1 = new Spark(frc.robot.RobotMap.Right_1_SPARK);
-        right2 = new Spark(frc.robot.RobotMap.RIGHT_2_SPARK);
-        leftTal = new TalonSRX(frc.robot.RobotMap.LEFT_Drive_TALON);
-        rightTal = new TalonSRX(frc.robot.RobotMap.RIGHT_Drive_TALON);
+        left1 = new Spark(RobotMap.LEFT_1_SPARK);
+		left2 = new Spark(RobotMap.LEFT_2_SPARK);
+		right1 = new Spark(RobotMap.Right_1_SPARK);
+        right2 = new Spark(RobotMap.RIGHT_2_SPARK);
+        leftTal = new CustomTalon(RobotMap.LEFT_Drive_TALON);
+        rightTal = new CustomTalon(RobotMap.RIGHT_Drive_TALON);
 
-        
-        SpeedControllerGroup leftSparks = new SpeedControllerGroup(left1, left2);
-        SpeedControllerGroup rightSparks = new SpeedControllerGroup(right1, right2);
-        
-        
+        SpeedControllerGroup leftSparks = new SpeedControllerGroup(left1, left2, leftTal);
+        SpeedControllerGroup rightSparks = new SpeedControllerGroup(right1, right2, rightTal);
         
         differentialDrive = new DifferentialDrive(leftSparks, rightSparks);
 
         // Creates encoder objects connected to their respective DIO ports
-		leftEnc = new Encoder(frc.robot.RobotMap.DRIVE_LEFT_ENCODER[0], frc.robot.RobotMap.DRIVE_LEFT_ENCODER[1], true, EncodingType.k4X);
-		rightEnc = new Encoder(frc.robot.RobotMap.DRIVE_RIGHT_ENCODER[0], frc.robot.RobotMap.DRIVE_RIGHT_ENCODER[1], true,
+		leftEnc = new Encoder(RobotMap.DRIVE_LEFT_ENCODER[0], RobotMap.DRIVE_LEFT_ENCODER[1], true, EncodingType.k4X);
+		rightEnc = new Encoder(RobotMap.DRIVE_RIGHT_ENCODER[0], RobotMap.DRIVE_RIGHT_ENCODER[1], true,
                 EncodingType.k4X);
                 
-        leftEnc.setDistancePerPulse(frc.robot.RobotMap.DISTANCE_PER_PULSE);
+        leftEnc.setDistancePerPulse(RobotMap.DISTANCE_PER_PULSE);
         leftEnc.setPIDSourceType(PIDSourceType.kDisplacement);
-        rightEnc.setDistancePerPulse(frc.robot.RobotMap.DISTANCE_PER_PULSE);
+        rightEnc.setDistancePerPulse(RobotMap.DISTANCE_PER_PULSE);
         rightEnc.setPIDSourceType(PIDSourceType.kDisplacement);
 
-        leftTal.setInverted(true);
+        rightTal.setInverted(true);
         left1.setInverted(true);
         left2.setInverted(true);
         

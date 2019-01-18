@@ -19,6 +19,7 @@ import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.ShiftGearsSubsystem;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.SerialPort;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -35,6 +36,7 @@ public class Robot extends TimedRobot {
   public static DrivetrainSubsystem drivetrainSubsystem;
   public static ShiftGearsSubsystem shiftGearsSubsystem;
   public static DriverStation driverStation;
+  SerialPort jevois;
 
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -48,6 +50,7 @@ public class Robot extends TimedRobot {
     drivetrainSubsystem = new DrivetrainSubsystem();
     shiftGearsSubsystem = new ShiftGearsSubsystem();
     driverStation = DriverStation.getInstance();
+    jevois = new SerialPort(115200, SerialPort.Port.kUSB);
     oi = new OI();
     
     m_chooser.setDefaultOption("Default Auto", new UserDriveCommand());
@@ -65,7 +68,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    System.out.println(drivetrainSubsystem.getLeftEncoderValue() + "," + drivetrainSubsystem.getRightEncoderValue());
+    System.out.println("Output: " + jevois.readString());
+    // System.out.println(drivetrainSubsystem.getLeftEncoderValue() + "," + drivetrainSubsystem.getRightEncoderValue());
     // System.out.println(drivetrainSubsystem.getLeftPulsesPerRevolution() + "," + drivetrainSubsystem.getRightPulsesPerRevolution()); 
     
   }

@@ -69,6 +69,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     System.out.println("Output: " + jevois.readString());
+    SmartDashboard.putString("contours", jevois.readString());
     // System.out.println(drivetrainSubsystem.getLeftEncoderValue() + "," + drivetrainSubsystem.getRightEncoderValue());
     // System.out.println(drivetrainSubsystem.getLeftPulsesPerRevolution() + "," + drivetrainSubsystem.getRightPulsesPerRevolution()); 
     

@@ -33,6 +33,7 @@ class YetiVision:
         self.framerate_fps = "0"
         self.frame_dec_factor = 6
        
+
         self.__resize_image_width = 320.0
         self.__resize_image_height = 240.0
         self.__resize_image_interpolation = cv2.INTER_CUBIC
@@ -40,9 +41,9 @@ class YetiVision:
         self.resize_image_output = None
 
         self.__hsv_threshold_input = self.resize_image_output
-        self.__hsv_threshold_hue = np.array([63.12949640287769, 89.0909090909091])
+        self.__hsv_threshold_hue = np.array([63.12949640287769, 95.15151515151516])
         self.__hsv_threshold_saturation = np.array([176.57374100719423, 255.0])
-        self.__hsv_threshold_value = np.array([52.74280575539568, 255.0])
+        self.__hsv_threshold_value = np.array([146.76258992805754, 255.0])
 
         self.hsv_threshold_output = None
 
@@ -52,7 +53,7 @@ class YetiVision:
         self.find_contours_output = None
 
         self.__filter_contours_contours = self.find_contours_output
-        self.__filter_contours_min_area = 0.0
+        self.__filter_contours_min_area = 200.0
         self.__filter_contours_min_perimeter = 0.0
         self.__filter_contours_min_width = 0.0
         self.__filter_contours_max_width = 1000.0
@@ -65,6 +66,8 @@ class YetiVision:
         self.__filter_contours_max_ratio = 0.9
 
         self.filter_contours_output = None
+
+
 
 
     # ###################################################################################################
@@ -144,22 +147,30 @@ class YetiVision:
         newContours = sortByArea(self.filter_contours_output)       
 
         if (contourNum == 0):
-            jevois.sendSerial("none")
-
+            jevois.sendSerial("")
+        
+        message = ""
         # Send the contour data over Serial
         for i in range (contourNum):
             cnt = newContours[i]
             x,y,w,h = cv2.boundingRect(cnt) # Get the stats of the contour including width and height
-            
-            # which contour, 0 is first
-            toSend = ("CON" + str(i) +  
-                     "area" + str(getArea(cnt)) +  # Area of contour
-                     "x" + str(round((getXcoord(cnt)*1000/320)-500, 2)) +  # x-coordinate of contour, -500 to 500 rounded to 2 decimal
-                     "y" + str(round(375-getYcoord(cnt)*750/240, 2)) +  # y-coordinate of contour, -375 to 375 rounded to 2 decimal
-                     "h" + str(round(h*750/240, 2)) +  # Height of contour, 0-750 rounded to 2 decimal
-                     "w" + str(round(w*1000/320, 2))) # Width of contour, 0-1000 rounded to 2 decimal
-            jevois.sendSerial(toSend)
-            
+        
+            area = str(getArea(cnt))
+            # x = str(round((getXcoord(cnt)*1000/320)-500, 2))
+            # y = str(round(375-getYcoord(cnt)*750/240, 2))
+            # h = str(round(h*750/240, 2))
+            # w = str(round(w*1000/320, 2)))
+            x = str(x)
+            y = str(y)
+            h = str(h)
+            w = str(w)
+
+            message = message + "{},{},{},{},{}".format(area, x, y, h, w)
+            if (i + 1 < contourNum):
+                message = message + "|"
+
+        
+        jevois.sendSerial(message)            
         # Write a title:
         cv2.putText(outimg, "YetiVision", (3, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 1, cv2.LINE_AA)
         
@@ -286,7 +297,3 @@ class YetiVision:
                 continue
             output.append(contour)
         return output
-
-
-#BlurType = Enum('BlurType', 'Box_Blur Gaussian_Blur Median_Filter Bilateral_Filter')
-

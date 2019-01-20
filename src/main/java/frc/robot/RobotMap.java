@@ -23,6 +23,7 @@ public class RobotMap {
   // Joysticks
   public static final int LEFT_JOYSTICK = 0;
   public static final int RIGHT_JOYSTICK = 1;
+  public static final int SECONDARY_JOYSTICK = 2;
  
   // Drive train sparks
 	public static final int LEFT_1_SPARK = 2;
@@ -39,5 +40,13 @@ public class RobotMap {
   public static final int[] DRIVE_RIGHT_ENCODER = { 2, 3 };
 
   // Drive train solenoid
-	public static final int[] DRIVE_TRAIN_SHIFT = { 1, 2 };
+  public static final int[] DRIVE_TRAIN_SHIFT = { 1, 2 };
+  
+  // Panel solenoids
+  public static final int[] INTAKE_SOLENOID = {3,4};
+  public static final int[] DEPLOY_SOLENOID = {5,6};
+
+  // Hatch Panel Limit Switches
+  public static final int LEFT_HATCH_PANEL_LIMIT = 4;
+  public static final int RIGHT_HATCH_PANEL_LIMIT = 5;
 }

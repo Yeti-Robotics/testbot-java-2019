@@ -15,8 +15,14 @@ import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.UserDriveCommand;
+import frc.robot.controls.Contour;
 import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.HatchPanelSubsystem;
 import frc.robot.subsystems.ShiftGearsSubsystem;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SerialPort;
@@ -36,6 +42,7 @@ public class Robot extends TimedRobot {
   public static DrivetrainSubsystem drivetrainSubsystem;
   public static ShiftGearsSubsystem shiftGearsSubsystem;
   public static DriverStation driverStation;
+  public static HatchPanelSubsystem hatchPanelSubsystem;
   SerialPort jevois;
 
   Command m_autonomousCommand;
@@ -47,6 +54,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    hatchPanelSubsystem = new HatchPanelSubsystem();
     drivetrainSubsystem = new DrivetrainSubsystem();
     shiftGearsSubsystem = new ShiftGearsSubsystem();
     driverStation = DriverStation.getInstance();
@@ -68,8 +76,24 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    System.out.println("Output: " + jevois.readString());
-    SmartDashboard.putString("contours", jevois.readString());
+    String cameraOutput = jevois.readString();
+    if(cameraOutput != null && !cameraOutput.isEmpty() && jevois.getBytesReceived() > 0) {
+      cameraOutput = cameraOutput.replace("\n", "|");
+      List<Contour> contours = new ArrayList<Contour>();
+      String[] contourStrings = cameraOutput.split("\\|");
+      
+      for (String contourString : contourStrings) {
+        String[] contourValues = contourString.split(",");
+        // if (contourValues.length == 5) {
+          Contour contour = new Contour(contourValues[0], contourValues[1], contourValues[2],
+           contourValues[3], contourValues[4]);
+          contours.add(contour);
+        // }
+      }
+      
+      // System.out.println(contours.toString());
+
+    }
     // System.out.println(drivetrainSubsystem.getLeftEncoderValue() + "," + drivetrainSubsystem.getRightEncoderValue());
     // System.out.println(drivetrainSubsystem.getLeftPulsesPerRevolution() + "," + drivetrainSubsystem.getRightPulsesPerRevolution()); 
     

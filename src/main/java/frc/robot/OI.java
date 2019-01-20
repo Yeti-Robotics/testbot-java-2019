@@ -8,6 +8,7 @@
 package frc.robot;
 
 
+import frc.robot.commands.DeployHatchPanelCommandGroup;
 import frc.robot.commands.DriveTrainHighShiftCommand;
 import frc.robot.commands.DriveTrainLowShiftCommand;
 
@@ -22,18 +23,22 @@ import edu.wpi.first.wpilibj.command.Command;
  * interface to the commands and command groups that allow control of the robot.
  */
 public class OI {
-  private Joystick leftJoy, rightJoy;
+  private Joystick leftJoy, rightJoy, secondaryJoy;
   
   public OI(){
   //Creates joystick objects for use
   leftJoy = new Joystick(RobotMap.LEFT_JOYSTICK);
   rightJoy = new Joystick(RobotMap.RIGHT_JOYSTICK);
+  secondaryJoy = new Joystick(RobotMap.SECONDARY_JOYSTICK);
 
     //Left joystick buttons
 		setJoystickButtonWhenPressedCommand(leftJoy, 1, new DriveTrainHighShiftCommand());
 		
 		//Right joystick buttons
-		setJoystickButtonWhenPressedCommand(rightJoy, 1, new DriveTrainLowShiftCommand());
+    setJoystickButtonWhenPressedCommand(rightJoy, 1, new DriveTrainLowShiftCommand());
+    
+    //Secondary Joystick Buttons
+    // setJoystickButtonWhenPressedCommand(secondaryJoy, 1, new DeployHatchPanelCommandGroup());
 
   }
 

@@ -11,11 +11,14 @@ import java.util.ArrayList;
 
 import org.opencv.core.Rect;
 
+import frc.robot.RobotMap;
+
 /**
  * Add your docs here.
  */
 public class VisionProcessor {
     private Contour rightCon, leftCon;
+
 
     public VisionProcessor(Contour rightCon, Contour leftCon) {
         this.rightCon = rightCon;
@@ -25,4 +28,15 @@ public class VisionProcessor {
     public Rect boundRect() {
         return new Rect(leftCon.x, leftCon.y, (rightCon.x + rightCon.w) - leftCon.x, rightCon.h);
     }
+
+    public double getLeftDistance() {
+        double leftDistance = (RobotMap.TAPE_BOUND_WIDTH_INCH * RobotMap.FOCAL_LENGTH) / leftCon.w;
+        return leftDistance;
+    }
+
+    public double getRightDistance() {
+        double rightDistance = (RobotMap.TAPE_BOUND_WIDTH_INCH * RobotMap.FOCAL_LENGTH) / rightCon.w;
+        return rightDistance;
+    }
+
 }

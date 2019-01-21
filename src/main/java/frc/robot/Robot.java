@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.UserDriveCommand;
 import frc.robot.controls.Contour;
+import frc.robot.controls.VisionProcessor;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.HatchPanelSubsystem;
 import frc.robot.subsystems.ShiftGearsSubsystem;
@@ -43,6 +44,7 @@ public class Robot extends TimedRobot {
   public static ShiftGearsSubsystem shiftGearsSubsystem;
   public static DriverStation driverStation;
   public static HatchPanelSubsystem hatchPanelSubsystem;
+  public static VisionProcessor visionProcessor;
   SerialPort jevois;
 
   Command m_autonomousCommand;
@@ -77,10 +79,13 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     String cameraOutput = jevois.readString();
-    if(cameraOutput != null && !cameraOutput.isEmpty() && jevois.getBytesReceived() > 0) {
+    // System.out.println(jevois.getBytesReceived() + "," + cameraOutput);
+    if(cameraOutput != null && !cameraOutput.isEmpty()) {
       cameraOutput = cameraOutput.replace("\n", "|");
       List<Contour> contours = new ArrayList<Contour>();
       String[] contourStrings = cameraOutput.split("\\|");
+
+      System.out.println(cameraOutput);
       
       for (String contourString : contourStrings) {
         String[] contourValues = contourString.split(",");
@@ -88,12 +93,19 @@ public class Robot extends TimedRobot {
           Contour contour = new Contour(contourValues[0], contourValues[1], contourValues[2],
            contourValues[3], contourValues[4]);
           contours.add(contour);
+          System.out.println(contour.toString());
+
         // }
       }
       
-      // System.out.println(contours.toString());
+      visionProcessor = new VisionProcessor(contours.get(0), contours.get(1));
+
+      System.out.println(visionProcessor.getLeftDistance() + "," + visionProcessor.getRightDistance());
+      System.out.println(contours.toString());
 
     }
+    // System.out.println(cameraOutput);
+    
     // System.out.println(drivetrainSubsystem.getLeftEncoderValue() + "," + drivetrainSubsystem.getRightEncoderValue());
     // System.out.println(drivetrainSubsystem.getLeftPulsesPerRevolution() + "," + drivetrainSubsystem.getRightPulsesPerRevolution()); 
     
@@ -181,3 +193,4 @@ public class Robot extends TimedRobot {
   public void testPeriodic() {
   }
 }
+

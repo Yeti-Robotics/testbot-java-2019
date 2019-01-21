@@ -49,4 +49,8 @@ public class RobotMap {
   // Hatch Panel Limit Switches
   public static final int LEFT_HATCH_PANEL_LIMIT = 4;
   public static final int RIGHT_HATCH_PANEL_LIMIT = 5;
+
+  // Vision Constants
+  public static final double FOCAL_LENGTH = 320 / (2 * Math.tan(32.5));
+  public static final double TAPE_BOUND_WIDTH_INCH = 3.3;
 }

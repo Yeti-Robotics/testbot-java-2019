@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import edu.wpi.first.vision.VisionRunner;
+import edu.wpi.first.vision.VisionThread;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SerialPort;
 
@@ -45,7 +47,8 @@ public class Robot extends TimedRobot {
   public static DriverStation driverStation;
   public static HatchPanelSubsystem hatchPanelSubsystem;
   public static VisionProcessor visionProcessor;
-  SerialPort jevois;
+  public static boolean runVisionThread = true;
+  public static SerialPort jevois;
 
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
@@ -62,10 +65,51 @@ public class Robot extends TimedRobot {
     driverStation = DriverStation.getInstance();
     jevois = new SerialPort(115200, SerialPort.Port.kUSB);
     oi = new OI();
+    Thread visionThread = new Thread(() -> {
+      while (!Thread.interrupted()) {
+      
+      String cameraOutput = jevois.readString();
+      System.out.println(cameraOutput);
+      if(cameraOutput != null && !cameraOutput.isEmpty()) {
+        List<Contour> contours = new ArrayList<Contour>();
+        String[] contourStrings = cameraOutput.split("\\|");
+  
+        System.out.println("output: " + cameraOutput);
+        
+        // for (String contourString : contourStrings) {
+        //   contourString = contourString.replace("\n", "");
+        //   System.out.println(contourString);
+        //   String[] contourValues = contourString.split(",");
+        //     Contour contour = new Contour(contourValues[0], contourValues[1], contourValues[2],
+        //      contourValues[3], contourValues[4]);
+        //     contours.add(contour);
+        //     System.out.println("output2: " + contour.toString());
+  
+        // }
+        
+        // visionProcessor = new VisionProcessor(contours.get(0), contours.get(1));
+  
+        // System.out.println(visionProcessor.getLeftDistance() + "," + visionProcessor.getRightDistance());
+        // System.out.println(contours.toString());
+  
+      }
+    }
+  
+    });
+
+    // visionThread.start();
     
     m_chooser.setDefaultOption("Default Auto", new UserDriveCommand());
     // chooser.addOption("My Auto", new MyAutoCommand());
     SmartDashboard.putData("Auto mode", m_chooser);
+  }
+
+  public static void enableVision() {
+    runVisionThread = true;
+  }
+
+  public static void disableVision() {
+    runVisionThread = false;
   }
 
   /**
@@ -78,32 +122,33 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    String cameraOutput = jevois.readString();
-    // System.out.println(jevois.getBytesReceived() + "," + cameraOutput);
-    if(cameraOutput != null && !cameraOutput.isEmpty()) {
-      cameraOutput = cameraOutput.replace("\n", "|");
-      List<Contour> contours = new ArrayList<Contour>();
-      String[] contourStrings = cameraOutput.split("\\|");
+    // String cameraOutput = jevois.readString();
+    // // System.out.println(cameraOutput);
+    // if(cameraOutput != null && !cameraOutput.isEmpty()) {
+    //   List<Contour> contours = new ArrayList<Contour>();
+    //   String[] contourStrings = cameraOutput.split("\\|");
 
-      System.out.println(cameraOutput);
+    //   System.out.println("output: " + cameraOutput);
       
-      for (String contourString : contourStrings) {
-        String[] contourValues = contourString.split(",");
-        // if (contourValues.length == 5) {
-          Contour contour = new Contour(contourValues[0], contourValues[1], contourValues[2],
-           contourValues[3], contourValues[4]);
-          contours.add(contour);
-          System.out.println(contour.toString());
+    //   for (String contourString : contourStrings) {
+    //     contourString = contourString.replace("\n", "");
+    //     System.out.println(contourString);
+    //     String[] contourValues = contourString.split(",");
+    //     // if (contourValues.length == 5) {
+    //       Contour contour = new Contour(contourValues[0], contourValues[1], contourValues[2],
+    //        contourValues[3], contourValues[4]);
+    //       contours.add(contour);
+    //       System.out.println("output2: " + contour.toString());
 
-        // }
-      }
+    //     // }
+    //   }
       
-      visionProcessor = new VisionProcessor(contours.get(0), contours.get(1));
+    //   visionProcessor = new VisionProcessor(contours.get(0), contours.get(1));
 
-      System.out.println(visionProcessor.getLeftDistance() + "," + visionProcessor.getRightDistance());
-      System.out.println(contours.toString());
+    //   System.out.println(visionProcessor.getLeftDistance() + "," + visionProcessor.getRightDistance());
+    //   System.out.println(contours.toString());
 
-    }
+    // }
     // System.out.println(cameraOutput);
     
     // System.out.println(drivetrainSubsystem.getLeftEncoderValue() + "," + drivetrainSubsystem.getRightEncoderValue());

@@ -11,10 +11,11 @@ package frc.robot.controls;
  * Add your docs here.
  */
 public class Contour {
-    public int area, x, y, w, h;
+    public double area;
+    public int x, y, w, h;
 
     public Contour(String area, String x, String y, String h, String w) {
-        this.area = Integer.parseInt(area);
+        this.area = Double.parseDouble(area);
         this.x = Integer.parseInt(x);
         this.y = Integer.parseInt(y);
         this.w = Integer.parseInt(w);

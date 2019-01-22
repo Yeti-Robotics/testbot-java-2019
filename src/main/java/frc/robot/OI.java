@@ -11,8 +11,7 @@ package frc.robot;
 import frc.robot.commands.DeployHatchPanelCommandGroup;
 import frc.robot.commands.DriveTrainHighShiftCommand;
 import frc.robot.commands.DriveTrainLowShiftCommand;
-
-
+import frc.robot.commands.RunVisionThreadCommand;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
@@ -38,8 +37,8 @@ public class OI {
     setJoystickButtonWhenPressedCommand(rightJoy, 1, new DriveTrainLowShiftCommand());
     
     //Secondary Joystick Buttons
-    // setJoystickButtonWhenPressedCommand(secondaryJoy, 1, new DeployHatchPanelCommandGroup());
-
+    setJoystickButtonWhenPressedCommand(secondaryJoy, 1, new DeployHatchPanelCommandGroup());
+    setJoystickButtonWhenPressedCommand(secondaryJoy, 2, new RunVisionThreadCommand());
   }
 
   //Gets the Y direction of the left drive joystick
@@ -64,6 +63,10 @@ public double getRightX() {
 
 private void setJoystickButtonWhenPressedCommand(GenericHID joystick, int button, Command command) {
   new JoystickButton(joystick, button).whenPressed(command);
+}
+
+private void setJoystickButtonWhileHeldCommand(GenericHID joystick, int button, Command command){
+  new JoystickButton(joystick, button).whileHeld(command);
 }
 
 };

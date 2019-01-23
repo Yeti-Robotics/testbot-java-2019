@@ -43,8 +43,8 @@ public class RobotMap {
   public static final int[] DRIVE_TRAIN_SHIFT = { 1, 2 };
   
   // Panel solenoids
-  public static final int[] INTAKE_SOLENOID = {3,4};
-  public static final int[] DEPLOY_SOLENOID = {5,6};
+  public static final int[] INTAKE_SOLENOID = {6, 7};
+  public static final int[] DEPLOY_SOLENOID = {4, 5};
 
   // Hatch Panel Limit Switches
   public static final int LEFT_HATCH_PANEL_LIMIT = 4;

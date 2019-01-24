@@ -20,8 +20,8 @@ public class DeployHatchPanelCommandGroup extends CommandGroup {
    addSequential(new ActivateDeployCommand());
    addSequential(new WaitCommand(0.75));
    addSequential(new DeactivateDeployCommand());
+  //  addSequential(new WaitCommand(0.5));
+  //  addSequential(new SenseHatchPanelCommand());
 
-
-    
   }
 }

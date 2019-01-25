@@ -21,9 +21,9 @@ public class SenseHatchPanelCommand extends Command {
 
   @Override
   protected void execute() {
-    // if (Robot.hatchPanelSubsystem.getLeftSwitch() || Robot.hatchPanelSubsystem.getRightSwitch()){
+    if (Robot.hatchPanelSubsystem.getLeftSwitch() || Robot.hatchPanelSubsystem.getRightSwitch()){
       Robot.hatchPanelSubsystem.activateIntake();
-    // }
+    }
   }
 
   @Override

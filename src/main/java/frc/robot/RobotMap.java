@@ -36,7 +36,7 @@ public class RobotMap {
   public static final int RIGHT_Drive_TALON = 6;
   
   // Encoders
-  public static final int[] DRIVE_LEFT_ENCODER = { 1, 0 };
+  public static final int[] DRIVE_LEFT_ENCODER = { 4, 5 };
   public static final int[] DRIVE_RIGHT_ENCODER = { 2, 3 };
 
   // Drive train solenoid
@@ -47,8 +47,8 @@ public class RobotMap {
   public static final int[] DEPLOY_SOLENOID = {5, 4};
 
   // Hatch Panel Limit Switches
-  public static final int LEFT_HATCH_PANEL_LIMIT = 4;
-  public static final int RIGHT_HATCH_PANEL_LIMIT = 5;
+  public static final int LEFT_HATCH_PANEL_LIMIT = 1;
+  public static final int RIGHT_HATCH_PANEL_LIMIT = 0;
 
   // Vision Constants
   public static final double FOCAL_LENGTH = 320 / (2 * Math.tan(32.5));

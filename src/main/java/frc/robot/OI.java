@@ -40,7 +40,7 @@ public class OI {
     //Secondary Joystick Buttons
     setJoystickButtonWhenPressedCommand(secondaryJoy, 1, new DeployHatchPanelCommandGroup());
     setJoystickButtonWhenPressedCommand(secondaryJoy, 2, new RunVisionThreadCommand());
-    setJoystickButtonWhenPressedCommand(secondaryJoy, 5, new SenseHatchPanelCommand());
+    // setJoystickButtonWhenPressedCommand(secondaryJoy, 5, new SenseHatchPanelCommand());
   }
 
   //Gets the Y direction of the left drive joystick

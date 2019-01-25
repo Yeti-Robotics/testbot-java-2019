@@ -174,16 +174,16 @@ class YetiVision:
         # Write a title:
         cv2.putText(outimg, "YetiVision", (3, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 1, cv2.LINE_AA)
         
-        # Write frames/s info from our timer into the edge map (NOTE: does not account for output conversion time):
-        fps = self.timer.stop()
-        #height, width, channels = outimg.shape # if outimg is grayscale, change to: height, width = outimg.shape
-        height, width, channels = outimg.shape
-        cv2.putText(outimg, fps, (3, height - 6), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 1, cv2.LINE_AA)
+        # # Write frames/s info from our timer into the edge map (NOTE: does not account for output conversion time):
+        # fps = self.timer.stop()
+        # #height, width, channels = outimg.shape # if outimg is grayscale, change to: height, width = outimg.shape
+        # height, width, channels = outimg.shape
+        # cv2.putText(outimg, fps, (3, height - 6), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 1, cv2.LINE_AA)
 
-        # Convert our BGR output image to video output format and send to host over USB. If your output image is not
-        # BGR, you can use sendCvGRAY(), sendCvRGB(), or sendCvRGBA() as appropriate:
-        outframe.sendCvBGR(outimg)
-        # outframe.sendCvGRAY(outimg)
+        # # Convert our BGR output image to video output format and send to host over USB. If your output image is not
+        # # BGR, you can use sendCvGRAY(), sendCvRGB(), or sendCvRGBA() as appropriate:
+        # outframe.sendCvBGR(outimg)
+        # # outframe.sendCvGRAY(outimg)
         
         
     # ###################################################################################################

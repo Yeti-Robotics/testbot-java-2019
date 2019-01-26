@@ -146,33 +146,33 @@ class YetiVision:
         # Sorts contours by the smallest area first
         newContours = sortByArea(self.filter_contours_output)       
 
-        if (contourNum == 0):
-            jevois.sendSerial("")
         
-        message = ""
+        
         # Send the contour data over Serial
-        for i in range (contourNum):
-            cnt = newContours[i]
-            x,y,w,h = cv2.boundingRect(cnt) # Get the stats of the contour including width and height
-        
-            area = str(getArea(cnt))
-            # x = str(round((getXcoord(cnt)*1000/320)-500, 2))
-            # y = str(round(375-getYcoord(cnt)*750/240, 2))
-            # h = str(round(h*750/240, 2))
-            # w = str(round(w*1000/320, 2)))
-            x = str(x)
-            y = str(y)
-            h = str(h)
-            w = str(w)
+        if(contourNum == 2):
+            message = ""
+            for i in range (contourNum):
+                cnt = newContours[i]
+                x,y,w,h = cv2.boundingRect(cnt) # Get the stats of the contour including width and height
+            
+                area = str(getArea(cnt))
+                # x = str(round((getXcoord(cnt)*1000/320)-500, 2))
+                # y = str(round(375-getYcoord(cnt)*750/240, 2))
+                # h = str(round(h*750/240, 2))
+                # w = str(round(w*1000/320, 2)))
+                x = str(x)
+                y = str(y)
+                h = str(h)
+                w = str(w)
 
-            message = message + "{},{},{},{},{}".format(area, x, y, h, w)
-            if (i + 1 < contourNum):
-                message = message + "|"
+                message = message + "{},{},{},{},{}".format(area, x, y, h, w)
+                if (i + 1 < contourNum):
+                    message = message + "|"
 
         
-        jevois.sendSerial(message)            
+            jevois.sendSerial(message)            
         # Write a title:
-        cv2.putText(outimg, "YetiVision", (3, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 1, cv2.LINE_AA)
+        # cv2.putText(outimg, "YetiVision", (3, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 1, cv2.LINE_AA)
         
         # # Write frames/s info from our timer into the edge map (NOTE: does not account for output conversion time):
         # fps = self.timer.stop()

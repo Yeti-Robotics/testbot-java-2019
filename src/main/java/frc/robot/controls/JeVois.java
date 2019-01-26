@@ -18,33 +18,34 @@ import frc.robot.RobotMap;
  */
 public class JeVois {
     SerialPort jevois;
+
     public JeVois() {
         jevois = new SerialPort(RobotMap.JEVOIS_BAUD_RATE, SerialPort.Port.kUSB);
     }
+
     public Contour[] parseStream() {
         String cameraOutput = jevois.readString();
-            System.out.println(cameraOutput);
-            if (cameraOutput != null && !cameraOutput.isEmpty()) {
-              List<Contour> contours = new ArrayList<Contour>();
-              String[] contourStrings = cameraOutput.split("\\|");
+        // System.out.println(cameraOutput);
+        if (cameraOutput != null && !cameraOutput.trim().isEmpty()) {
+            List<Contour> contours = new ArrayList<Contour>();
+            String[] contourStrings = cameraOutput.split("\\|");
 
-            //   System.out.println("output: " + cameraOutput);
+            System.out.println("output: " + cameraOutput);
+            System.out.println("output 1.5: " + contourStrings.length);
+            if (contourStrings.length == 2) {
+                for (String contourString : contourStrings) {
+                    String[] contourValues = contourString.split(",");
+                    Contour contour = new Contour(contourValues[0].trim(), contourValues[1].trim(), contourValues[2].trim(),
+                            contourValues[3].trim(), contourValues[4].trim());
+                    System.out.println("output2: " + contour.toString());
+                    contours.add(contour);
 
-              for (String contourString : contourStrings) {
-                contourString = contourString.replace("\n", "");
-                System.out.println(contourString);
-                String[] contourValues = contourString.split(",");
-                Contour contour = new Contour(contourValues[0], contourValues[1], contourValues[2], contourValues[3],
-                    contourValues[4]);
-                System.out.println("output2: " + contour.toString());
-                contours.add(contour);
-              
-              }
-              Contour[] contoursArray = {
-                  contours.get(0), contours.get(1)
-              };
-              return contoursArray;
+                }
+                Contour[] contoursArray = { contours.get(0), contours.get(1) };
+                return contoursArray;
             }
-            return null;
+
+        }
+        return null;
     }
 }

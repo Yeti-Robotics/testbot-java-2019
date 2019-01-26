@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.UserDriveCommand;
 import frc.robot.controls.Contour;
+import frc.robot.controls.JeVois;
 import frc.robot.controls.VisionProcessor;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.HatchPanelSubsystem;
@@ -24,6 +25,8 @@ import frc.robot.subsystems.ShiftGearsSubsystem;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import edu.wpi.first.vision.VisionRunner;
 import edu.wpi.first.vision.VisionThread;
@@ -48,7 +51,8 @@ public class Robot extends TimedRobot {
   public static HatchPanelSubsystem hatchPanelSubsystem;
   public static VisionProcessor visionProcessor;
   public static boolean runVisionThread = false;
-  public static SerialPort jevois;
+  public static JeVois jevois;
+  public static List<Contour[]> contourList = new ArrayList<>();
   static Object imgLock = new Object();
 
   Command m_autonomousCommand;
@@ -64,53 +68,22 @@ public class Robot extends TimedRobot {
     drivetrainSubsystem = new DrivetrainSubsystem();
     shiftGearsSubsystem = new ShiftGearsSubsystem();
     driverStation = DriverStation.getInstance();
-    jevois = new SerialPort(115200, SerialPort.Port.kUSB);
+    jevois = new JeVois();
     oi = new OI();
-    Thread visionThread = new Thread(() -> {
-      System.out.println("ehy");
-      while (true) {
-        while (runVisionThread) {
-          synchronized (imgLock) {
-
-            System.out.println("hii");
-
-            String cameraOutput = jevois.readString();
-            System.out.println(cameraOutput);
-            if (cameraOutput != null && !cameraOutput.isEmpty()) {
-              List<Contour> contours = new ArrayList<Contour>();
-              String[] contourStrings = cameraOutput.split("\\|");
-
-              System.out.println("output: " + cameraOutput);
-
-              // for (String contourString : contourStrings) {
-              //   contourString = contourString.replace("\n", "");
-              //   System.out.println(contourString);
-              //   String[] contourValues = contourString.split(",");
-              //   Contour contour = new Contour(contourValues[0], contourValues[1], contourValues[2], contourValues[3],
-              //       contourValues[4]);
-              //   contours.add(contour);
-              //   System.out.println("output2: " + contour.toString());
-
-              // }
-
-              // visionProcessor = new VisionProcessor(contours.get(0), contours.get(1));
-
-              // System.out.println(visionProcessor.getLeftDistance() + "," + visionProcessor.getRightDistance());
-              // System.out.println(contours.toString());
-
+    new Timer().scheduleAtFixedRate(new TimerTask(){
+    
+      @Override
+      public void run() {
+          Contour[] contours = jevois.parseStream();
+          if (contours != null) {
+            contourList.add(contours);
+            if (contourList.size() > 10){
+              contourList.remove(0);
             }
           }
-        }
-        try {
-          Thread.sleep(100);
-        } catch (InterruptedException e) {
-
-        }
       }
-    });
-
-    // visionThread.start();
-
+    }, 20L, 20L);
+    
     m_chooser.setDefaultOption("Default Auto", new UserDriveCommand());
     // chooser.addOption("My Auto", new MyAutoCommand());
     SmartDashboard.putData("Auto mode", m_chooser);

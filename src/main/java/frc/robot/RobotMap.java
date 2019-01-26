@@ -53,4 +53,5 @@ public class RobotMap {
   // Vision Constants
   public static final double FOCAL_LENGTH = 320 / (2 * Math.tan(32.5));
   public static final double TAPE_BOUND_WIDTH_INCH = 3.3;
+  public static final int JEVOIS_BAUD_RATE = 115200;
 }

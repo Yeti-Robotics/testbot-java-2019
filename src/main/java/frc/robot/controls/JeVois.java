@@ -18,14 +18,30 @@ import frc.robot.RobotMap;
  */
 public class JeVois {
     SerialPort jevois;
+    Contour leftCon,rightCon;
+
+
 
     public JeVois() {
         jevois = new SerialPort(RobotMap.JEVOIS_BAUD_RATE, SerialPort.Port.kUSB);
+       
+    }
+
+    
+    public double getLeftDistance() {
+        double leftDistance = (RobotMap.TAPE_BOUND_WIDTH_INCH * RobotMap.FOCAL_LENGTH) / leftCon.w;
+        return leftDistance;
+    }
+
+    public double getRightDistance() {
+        double rightDistance = (RobotMap.TAPE_BOUND_WIDTH_INCH * RobotMap.FOCAL_LENGTH) / rightCon.w;
+        return rightDistance;
     }
 
     public Contour[] parseStream() {
         String cameraOutput = jevois.readString();
         // System.out.println(cameraOutput);
+
         if (cameraOutput != null && !cameraOutput.trim().isEmpty()) {
             List<Contour> contours = new ArrayList<Contour>();
             String[] contourStrings = cameraOutput.split("\\|");
@@ -39,6 +55,7 @@ public class JeVois {
                             contourValues[3].trim(), contourValues[4].trim());
                     System.out.println("output2: " + contour.toString());
                     contours.add(contour);
+                
 
                 }
                 Contour[] contoursArray = { contours.get(0), contours.get(1) };

@@ -12,6 +12,8 @@ import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import com.analog.adis16448.frc.ADIS16448_IMU;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
 public class DrivetrainSubsystem extends Subsystem {
@@ -22,6 +24,7 @@ public class DrivetrainSubsystem extends Subsystem {
     private DifferentialDrive differentialDrive;
     private DriveMode driveMode;
     public DigitalInput lineSensorLeft, lineSensorCenter, lineSensorRight;
+    public ADIS16448_IMU gyro;
 
 
     public enum DriveMode {
@@ -36,6 +39,8 @@ public class DrivetrainSubsystem extends Subsystem {
         right2 = new Spark(RobotMap.RIGHT_2_SPARK);
         leftTal = new CustomTalon(RobotMap.LEFT_Drive_TALON);
         rightTal = new CustomTalon(RobotMap.RIGHT_Drive_TALON);
+        gyro = new ADIS16448_IMU();
+        gyro.calibrate();
 
         SpeedControllerGroup leftSparks = new SpeedControllerGroup(left1, left2, leftTal);
         SpeedControllerGroup rightSparks = new SpeedControllerGroup(right1, right2, rightTal);

@@ -51,9 +51,12 @@ public class RobotMap {
   public static final int RIGHT_HATCH_PANEL_LIMIT = 0;
 
   // Vision Constants
-  public static final double FOCAL_LENGTH = 320 / (2 * Math.tan(32.5));
+  public static final int IMAGE_WIDTH = 320;
+  public static final double FOCAL_LENGTH = IMAGE_WIDTH / (2 * Math.tan(32.5));
   public static final double TAPE_BOUND_WIDTH_INCH = 3.3;
   public static final int JEVOIS_BAUD_RATE = 115200;
+  public static final int FOV = 65;
+  
 
   // Line Following Constants
   public static final int LEFT_LINE_FOLLOW = 6;

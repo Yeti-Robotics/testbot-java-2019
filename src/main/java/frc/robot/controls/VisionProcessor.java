@@ -17,26 +17,30 @@ import frc.robot.RobotMap;
  * Add your docs here.
  */
 public class VisionProcessor {
-    private Contour rightCon, leftCon;
+    private static Contour rightCon, leftCon;
 
 
-    public VisionProcessor(Contour rightCon, Contour leftCon) {
-        this.rightCon = rightCon;
-        this.leftCon = leftCon;
-    } 
+    
 
-    public Rect boundRect() {
+    public static Rect boundRect(Contour leftCon, Contour rightCon ) {
         return new Rect(leftCon.x, leftCon.y, (rightCon.x + rightCon.w) - leftCon.x, rightCon.h);
     }
 
-    public double getLeftDistance() {
+    public static double getLeftDistance(Contour leftCon, Contour rightCon ) {
         double leftDistance = (RobotMap.TAPE_BOUND_WIDTH_INCH * RobotMap.FOCAL_LENGTH) / leftCon.w;
         return leftDistance;
     }
 
-    public double getRightDistance() {
+    public static double getRightDistance(Contour leftCon, Contour rightCon ) {
         double rightDistance = (RobotMap.TAPE_BOUND_WIDTH_INCH * RobotMap.FOCAL_LENGTH) / rightCon.w;
         return rightDistance;
+    }
+
+    public static double getAzimuth(Contour leftCon, Contour rightCon ) {
+        double centerX = (boundRect(leftCon, rightCon).x + boundRect(leftCon, rightCon).width/2);
+        double azimuth = (centerX*RobotMap.FOV/RobotMap.IMAGE_WIDTH) - (RobotMap.FOV/2);
+        return azimuth;
+        
     }
 
 }

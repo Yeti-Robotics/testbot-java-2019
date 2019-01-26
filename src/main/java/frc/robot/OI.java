@@ -11,6 +11,7 @@ package frc.robot;
 import frc.robot.commands.DeployHatchPanelCommandGroup;
 import frc.robot.commands.DriveTrainHighShiftCommand;
 import frc.robot.commands.DriveTrainLowShiftCommand;
+import frc.robot.commands.LineFollowCommand;
 import frc.robot.commands.RunVisionThreadCommand;
 import frc.robot.commands.SenseHatchPanelCommand;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -40,7 +41,8 @@ public class OI {
     //Secondary Joystick Buttons
     setJoystickButtonWhenPressedCommand(secondaryJoy, 1, new DeployHatchPanelCommandGroup());
     setJoystickButtonWhenPressedCommand(secondaryJoy, 2, new RunVisionThreadCommand());
-    // setJoystickButtonWhenPressedCommand(secondaryJoy, 5, new SenseHatchPanelCommand());
+    setJoystickButtonWhenPressedCommand(secondaryJoy, 3, new LineFollowCommand());
+    
   }
 
   //Gets the Y direction of the left drive joystick

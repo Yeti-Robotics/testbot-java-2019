@@ -54,4 +54,9 @@ public class RobotMap {
   public static final double FOCAL_LENGTH = 320 / (2 * Math.tan(32.5));
   public static final double TAPE_BOUND_WIDTH_INCH = 3.3;
   public static final int JEVOIS_BAUD_RATE = 115200;
+
+  // Line Following Constants
+  public static final int LEFT_LINE_FOLLOW = 2;
+  public static final int CENTER_LINE_FOLLOW = 3;
+  public static final int RIGHT_LINE_FOLLOW = 4;
 }

@@ -4,6 +4,7 @@ import frc.robot.RobotMap;
 import frc.robot.commands.UserDriveCommand;
 import frc.robot.controls.CustomTalon;
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.Spark;
@@ -20,6 +21,7 @@ public class DrivetrainSubsystem extends Subsystem {
     private Encoder leftEnc, rightEnc;
     private DifferentialDrive differentialDrive;
     private DriveMode driveMode;
+    public DigitalInput lineSensorLeft, lineSensorCenter, lineSensorRight;
 
 
     public enum DriveMode {
@@ -53,6 +55,10 @@ public class DrivetrainSubsystem extends Subsystem {
         rightTal.setInverted(true);
         left1.setInverted(true);
         left2.setInverted(true);
+        
+        lineSensorLeft = new DigitalInput(RobotMap.LEFT_LINE_FOLLOW);
+        lineSensorCenter = new DigitalInput(RobotMap.CENTER_LINE_FOLLOW);
+        lineSensorRight = new DigitalInput(RobotMap.RIGHT_LINE_FOLLOW);
         
         SmartDashboard.putNumber("Left drive distance", getLeftEncoderValue());
 		SmartDashboard.putNumber("Right drive distance", getRightEncoderValue());

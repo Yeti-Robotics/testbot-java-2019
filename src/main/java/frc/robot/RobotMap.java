@@ -56,7 +56,7 @@ public class RobotMap {
   public static final int JEVOIS_BAUD_RATE = 115200;
 
   // Line Following Constants
-  public static final int LEFT_LINE_FOLLOW = 2;
-  public static final int CENTER_LINE_FOLLOW = 3;
-  public static final int RIGHT_LINE_FOLLOW = 4;
+  public static final int LEFT_LINE_FOLLOW = 6;
+  public static final int CENTER_LINE_FOLLOW = 7;
+  public static final int RIGHT_LINE_FOLLOW = 8;
 }

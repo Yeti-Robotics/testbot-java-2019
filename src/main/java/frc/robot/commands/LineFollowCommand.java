@@ -31,14 +31,16 @@ public class LineFollowCommand extends Command {
     case "010":
       Robot.drivetrainSubsystem.tankDrive(0.3, 0.3);
       break;
+    case "110":
     case "100":
       Robot.drivetrainSubsystem.tankDrive(0.5, 0.3);
       break;
+    case "011":
     case "001":
       Robot.drivetrainSubsystem.tankDrive(0.3, 0.5);
       break;
-    case "000":
-      Robot.drivetrainSubsystem.tankDrive(0, 0);
+    case "000": //for testing
+      Robot.drivetrainSubsystem.tankDrive(0.0, 0.0);
       break;
     }
 

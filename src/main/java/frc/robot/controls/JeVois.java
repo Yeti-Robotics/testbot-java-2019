@@ -10,6 +10,7 @@ package frc.robot.controls;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.wpi.first.hal.util.UncleanStatusException;
 import edu.wpi.first.wpilibj.SerialPort;
 import frc.robot.RobotMap;
 
@@ -23,8 +24,10 @@ public class JeVois {
 
 
     public JeVois() {
-        jevois = new SerialPort(RobotMap.JEVOIS_BAUD_RATE, SerialPort.Port.kUSB);
-       
+        try {
+            jevois = new SerialPort(RobotMap.JEVOIS_BAUD_RATE, SerialPort.Port.kUSB);
+        } catch (UncleanStatusException e) {
+        }   
     }
 
     
@@ -46,14 +49,14 @@ public class JeVois {
             List<Contour> contours = new ArrayList<Contour>();
             String[] contourStrings = cameraOutput.split("\\|");
 
-            System.out.println("output: " + cameraOutput);
-            System.out.println("output 1.5: " + contourStrings.length);
+            // System.out.println("output: " + cameraOutput);
+            // System.out.println("output 1.5: " + contourStrings.length);
             if (contourStrings.length == 2) {
                 for (String contourString : contourStrings) {
                     String[] contourValues = contourString.split(",");
                     Contour contour = new Contour(contourValues[0].trim(), contourValues[1].trim(), contourValues[2].trim(),
                             contourValues[3].trim(), contourValues[4].trim());
-                    System.out.println("output2: " + contour.toString());
+                    // System.out.println("output2: " + contour.toString());
                     contours.add(contour);
                 
 

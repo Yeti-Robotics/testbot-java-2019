@@ -61,9 +61,9 @@ public class DrivetrainSubsystem extends Subsystem {
         left1.setInverted(true);
         left2.setInverted(true);
         
-        // lineSensorLeft = new DigitalInput(RobotMap.LEFT_LINE_FOLLOW);
-        // lineSensorCenter = new DigitalInput(RobotMap.CENTER_LINE_FOLLOW);
-        // lineSensorRight = new DigitalInput(RobotMap.RIGHT_LINE_FOLLOW);
+        lineSensorLeft = new DigitalInput(RobotMap.LEFT_LINE_FOLLOW);
+        lineSensorCenter = new DigitalInput(RobotMap.CENTER_LINE_FOLLOW);
+        lineSensorRight = new DigitalInput(RobotMap.RIGHT_LINE_FOLLOW);
 
         SmartDashboard.putNumber("Left drive distance", getLeftEncoderValue());
 		SmartDashboard.putNumber("Right drive distance", getRightEncoderValue());

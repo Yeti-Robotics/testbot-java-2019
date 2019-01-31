@@ -17,7 +17,7 @@ public class RobotMap {
  
  // Physical Constants
  public static final double WHEEL_DIAMETER = 5.875; // inches
- public static final double PULSES_PER_REVOLUTION = 512;
+ public static final double PULSES_PER_REVOLUTION = 128;
  public static final double DISTANCE_PER_PULSE = Math.PI * WHEEL_DIAMETER / PULSES_PER_REVOLUTION;
 
   // Joysticks
@@ -38,7 +38,7 @@ public class RobotMap {
   // Encoders
   public static final int[] DRIVE_LEFT_ENCODER = { 7, 8 };
   public static final int[] DRIVE_RIGHT_ENCODER = { 5, 6 };
-  public static final int ROBOT_RADIUS = 12;
+  public static final double ROBOT_RADIUS = 12.0;
 
   // Drive train solenoid
   public static final int[] DRIVE_TRAIN_SHIFT = { 1, 2 };

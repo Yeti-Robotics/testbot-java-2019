@@ -33,9 +33,9 @@ public class TurnAngleCommand extends Command {
   @Override
   protected void execute() {
     if (angle > 0) {
-      Robot.drivetrainSubsystem.tankDrive(0.5, -0.5);
+      Robot.drivetrainSubsystem.tankDrive(0.6, -0.6);
     } else if (angle < 0) {
-      Robot.drivetrainSubsystem.tankDrive(-0.5, 0.5);
+      Robot.drivetrainSubsystem.tankDrive(-0.6, 0.6);
     }
   }
 
@@ -43,7 +43,7 @@ public class TurnAngleCommand extends Command {
   @Override
   protected boolean isFinished() {
 
-    return (Math.abs(Robot.drivetrainSubsystem.getLeftEncoderValue()) == Math.abs(arcLength));
+    return (Math.abs(Robot.drivetrainSubsystem.getRightEncoderValue()) >= Math.abs(arcLength) && (Math.abs(Robot.drivetrainSubsystem.getLeftEncoderValue()) >= Math.abs(arcLength)));
   }
 
   // Called once after isFinished returns true

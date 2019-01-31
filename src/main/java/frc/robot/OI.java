@@ -10,6 +10,7 @@ package frc.robot;
 
 import frc.robot.commands.CorrectAzimuthCommand;
 import frc.robot.commands.DeployHatchPanelCommandGroup;
+import frc.robot.commands.DriveForDistanceCommand;
 import frc.robot.commands.DriveTrainHighShiftCommand;
 import frc.robot.commands.DriveTrainLowShiftCommand;
 import frc.robot.commands.LineFollowCommand;
@@ -48,6 +49,7 @@ public class OI {
     setJoystickButtonWhenPressedCommand(secondaryJoy, 5, new ResetEncodersCommand());
     setJoystickButtonWhenPressedCommand(secondaryJoy, 4, new CorrectAzimuthCommand());
     setJoystickButtonWhenPressedCommand(secondaryJoy, 6, new TurnAngleCommand(90));
+    setJoystickButtonWhenPressedCommand(secondaryJoy, 7, new DriveForDistanceCommand(50, 0.6, 0.6));
   }
 
   //Gets the Y direction of the left drive joystick

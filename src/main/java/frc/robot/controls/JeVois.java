@@ -12,6 +12,7 @@ import java.util.List;
 
 import edu.wpi.first.hal.util.UncleanStatusException;
 import edu.wpi.first.wpilibj.SerialPort;
+import frc.robot.Robot;
 import frc.robot.RobotMap;
 
 /**
@@ -32,12 +33,16 @@ public class JeVois {
 
     
     public double getLeftDistance() {
-        double leftDistance = (RobotMap.TAPE_BOUND_WIDTH_INCH * RobotMap.FOCAL_LENGTH) / leftCon.w;
+        double leftDistance = -1;
+        if (Robot.contourList.size() > 0)
+            leftDistance = (RobotMap.TAPE_BOUND_WIDTH_INCH * RobotMap.FOCAL_LENGTH) / Robot.contourList.get(0)[0].w;
         return leftDistance;
     }
 
     public double getRightDistance() {
-        double rightDistance = (RobotMap.TAPE_BOUND_WIDTH_INCH * RobotMap.FOCAL_LENGTH) / rightCon.w;
+        double rightDistance = -1;
+       if (Robot.contourList.size() > 0)
+            rightDistance = (RobotMap.TAPE_BOUND_WIDTH_INCH * RobotMap.FOCAL_LENGTH) / Robot.contourList.get(0)[1].w;
         return rightDistance;
     }
 

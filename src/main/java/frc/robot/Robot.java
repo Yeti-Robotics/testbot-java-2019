@@ -75,10 +75,12 @@ public class Robot extends TimedRobot {
           Contour[] contours = jevois.parseStream();
           if (contours != null) {
             contourList.add(contours);
+            // System.out.println(contourList.get(0)[0] + "," + contourList.get(0)[1]);
             if (contourList.size() > 10){
               contourList.remove(0);
             }
           }
+          
       }
     }, 20L, 20L);
     
@@ -110,6 +112,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+
+    System.out.println(jevois.getLeftDistance() + "," + jevois.getRightDistance());
+    
 
     // String cameraOutput = jevois.readString();
     // // System.out.println(cameraOutput);

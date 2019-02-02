@@ -48,7 +48,7 @@ public class OI {
     setJoystickButtonWhenPressedCommand(secondaryJoy, 3, new LineFollowCommand());
     setJoystickButtonWhenPressedCommand(secondaryJoy, 5, new ResetEncodersCommand());
     setJoystickButtonWhenPressedCommand(secondaryJoy, 4, new CorrectAzimuthCommand());
-    setJoystickButtonWhenPressedCommand(secondaryJoy, 6, new TurnAngleCommand(90));
+    setJoystickButtonWhenPressedCommand(secondaryJoy, 6, new TurnAngleCommand(-90));
     setJoystickButtonWhenPressedCommand(secondaryJoy, 7, new DriveForDistanceCommand(50, 0.6, 0.6));
   }
 

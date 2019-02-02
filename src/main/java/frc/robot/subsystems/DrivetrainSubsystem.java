@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.analog.adis16448.frc.ADIS16448_IMU;
@@ -45,6 +46,7 @@ public class DrivetrainSubsystem extends Subsystem {
         leftTal = new CustomTalon(RobotMap.LEFT_Drive_TALON);
         rightTal = new CustomTalon(RobotMap.RIGHT_Drive_TALON);
         gyro = new ADXRS450_Gyro();
+        gyro.setPIDSourceType(PIDSourceType.kDisplacement);
         gyro.calibrate();
         SmartDashboard.putData(gyro);
         
@@ -53,31 +55,18 @@ public class DrivetrainSubsystem extends Subsystem {
         SpeedControllerGroup rightSparks = new SpeedControllerGroup(right1, right2, rightTal);
 
         differentialDrive = new DifferentialDrive(leftSparks, rightSparks);
-        gyroPIDController = new PIDController(1, 0, 0, new PIDSource(){
-        
-            @Override
-            public void setPIDSourceType(PIDSourceType pidSource) {
-                gyro.setPIDSourceType(pidSource);
-            }
-        
-            @Override
-            public double pidGet() {
-                double angle = Math.abs(gyro.getAngle() % 360);
-                System.out.println(angle);
-                return angle;
-            }
-        
-            @Override
-            public PIDSourceType getPIDSourceType() {
-                return PIDSourceType.kDisplacement;
-            }
-        }, (output) -> {
-            differentialDrive.arcadeDrive(0, output);
+        gyroPIDController = new PIDController(0.02, 0, 0, gyro, (output) -> {
+            System.out.println(String.format("%s %s %s", 
+            output, 
+            gyroPIDController.getError(),
+            gyroPIDController.onTarget()));
+            differentialDrive.arcadeDrive(output, 0);
         });
-        gyroPIDController.setInputRange(0, 360);
+        gyroPIDController.setInputRange(-360, 360);
         gyroPIDController.setContinuous(true);
         gyroPIDController.setOutputRange(-0.6, 0.6);
-        gyroPIDController.setAbsoluteTolerance(3);;
+        gyroPIDController.setAbsoluteTolerance(0.2);
+        LiveWindow.add(gyroPIDController);
 
         // Creates encoder objects connected to their respective DIO ports
         leftEnc = new Encoder(RobotMap.DRIVE_LEFT_ENCODER[0], RobotMap.DRIVE_LEFT_ENCODER[1], true, EncodingType.k4X);

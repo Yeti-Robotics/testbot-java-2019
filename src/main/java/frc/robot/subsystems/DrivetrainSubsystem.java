@@ -4,8 +4,13 @@ import frc.robot.RobotMap;
 import frc.robot.commands.UserDriveCommand;
 import frc.robot.controls.CustomTalon;
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.PIDController;
+import edu.wpi.first.wpilibj.PIDOutput;
+import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
@@ -24,34 +29,62 @@ public class DrivetrainSubsystem extends Subsystem {
     private DifferentialDrive differentialDrive;
     private DriveMode driveMode;
     public DigitalInput lineSensorLeft, lineSensorCenter, lineSensorRight;
-    public ADIS16448_IMU gyro;
-
+    public ADXRS450_Gyro gyro;
+    public PIDController gyroPIDController;
 
     public enum DriveMode {
-	    TANK, ARCADE, CHEEZY;
-	}
+        TANK, ARCADE, CHEEZY;
+    }
 
     public DrivetrainSubsystem() {
 
         left1 = new Spark(RobotMap.LEFT_1_SPARK);
-		left2 = new Spark(RobotMap.LEFT_2_SPARK);
-		right1 = new Spark(RobotMap.Right_1_SPARK);
+        left2 = new Spark(RobotMap.LEFT_2_SPARK);
+        right1 = new Spark(RobotMap.Right_1_SPARK);
         right2 = new Spark(RobotMap.RIGHT_2_SPARK);
         leftTal = new CustomTalon(RobotMap.LEFT_Drive_TALON);
         rightTal = new CustomTalon(RobotMap.RIGHT_Drive_TALON);
-        gyro = new ADIS16448_IMU();
+        gyro = new ADXRS450_Gyro();
         gyro.calibrate();
+        SmartDashboard.putData(gyro);
+        
 
         SpeedControllerGroup leftSparks = new SpeedControllerGroup(left1, left2, leftTal);
         SpeedControllerGroup rightSparks = new SpeedControllerGroup(right1, right2, rightTal);
-        
+
         differentialDrive = new DifferentialDrive(leftSparks, rightSparks);
+        gyroPIDController = new PIDController(1, 0, 0, new PIDSource(){
+        
+            @Override
+            public void setPIDSourceType(PIDSourceType pidSource) {
+                gyro.setPIDSourceType(pidSource);
+            }
+        
+            @Override
+            public double pidGet() {
+                double angle = Math.abs(gyro.getAngle() % 360);
+                System.out.println(angle);
+                return angle;
+            }
+        
+            @Override
+            public PIDSourceType getPIDSourceType() {
+                return PIDSourceType.kDisplacement;
+            }
+        }, (output) -> {
+            differentialDrive.arcadeDrive(0, output);
+        });
+        gyroPIDController.setInputRange(0, 360);
+        gyroPIDController.setContinuous(true);
+        gyroPIDController.setOutputRange(-0.6, 0.6);
+        gyroPIDController.setAbsoluteTolerance(3);;
 
         // Creates encoder objects connected to their respective DIO ports
-		leftEnc = new Encoder(RobotMap.DRIVE_LEFT_ENCODER[0], RobotMap.DRIVE_LEFT_ENCODER[1], true, EncodingType.k4X);
-		rightEnc = new Encoder(RobotMap.DRIVE_RIGHT_ENCODER[0], RobotMap.DRIVE_RIGHT_ENCODER[1], true,
+        leftEnc = new Encoder(RobotMap.DRIVE_LEFT_ENCODER[0], RobotMap.DRIVE_LEFT_ENCODER[1], true, EncodingType.k4X);
+        leftEnc.setReverseDirection(false);
+        rightEnc = new Encoder(RobotMap.DRIVE_RIGHT_ENCODER[0], RobotMap.DRIVE_RIGHT_ENCODER[1], true,
                 EncodingType.k4X);
-                
+
         leftEnc.setDistancePerPulse(RobotMap.DISTANCE_PER_PULSE);
         leftEnc.setPIDSourceType(PIDSourceType.kDisplacement);
         rightEnc.setDistancePerPulse(RobotMap.DISTANCE_PER_PULSE);
@@ -60,17 +93,35 @@ public class DrivetrainSubsystem extends Subsystem {
         rightTal.setInverted(true);
         left1.setInverted(true);
         left2.setInverted(true);
-        
+
         lineSensorLeft = new DigitalInput(RobotMap.LEFT_LINE_FOLLOW);
         lineSensorCenter = new DigitalInput(RobotMap.CENTER_LINE_FOLLOW);
         lineSensorRight = new DigitalInput(RobotMap.RIGHT_LINE_FOLLOW);
 
         SmartDashboard.putNumber("Left drive distance", getLeftEncoderValue());
-		SmartDashboard.putNumber("Right drive distance", getRightEncoderValue());
-		
-		driveMode = DriveMode.TANK;
+        SmartDashboard.putNumber("Right drive distance", getRightEncoderValue());
 
-    };
+        driveMode = DriveMode.TANK;
+
+    }
+    public boolean gyroPIDOnTarget() {
+    
+        return gyroPIDController.onTarget();
+    }
+    public void disableGyroPID() {
+
+        gyroPIDController.disable();
+    }
+
+    public void enableGyroPID(double setpoint) {
+
+        gyroPIDController.setSetpoint(setpoint);
+        gyroPIDController.enable();
+    }
+
+    public void resetGyro() {
+        gyro.reset();
+    }
 
     public DriveMode getDriveMode() {
         return driveMode;
@@ -81,65 +132,73 @@ public class DrivetrainSubsystem extends Subsystem {
     }
 
     // Resets the encoder values
-	public void resetEncoders() {
-		rightEnc.reset();
-		leftEnc.reset();
+    public void resetEncoders() {
+        rightEnc.reset();
+        leftEnc.reset();
     }
-    
+
     // Prints drive encoder values to the console
-	public void printEncoders() {
-	    System.out.println(rightEnc.getDistance() + ", " + leftEnc.getDistance());
+    public void printEncoders() {
+        System.out.println(rightEnc.getDistance() + ", " + leftEnc.getDistance());
     }
-    
+
     public double getRightEncoderValue() {
-		return rightEnc.getDistance();
+        return rightEnc.getDistance();
     }
-    
+
     public double getLeftEncoderValue() {
-		return leftEnc.getDistance();
+        return leftEnc.getDistance();
     }
-    
+
     public double getAvgEncoderDistance() {
-		return (Math.abs(getRightEncoderValue()) + Math.abs(getLeftEncoderValue())) / 2;
+        return (Math.abs(getRightEncoderValue()) + Math.abs(getLeftEncoderValue())) / 2;
     }
-    
+
     // Controls the right side of the drive train
-	public void moveDriveTrainRight(double power) {
-		right1.set(power);
+    public void moveDriveTrainRight(double power) {
+        right1.set(power);
         right2.set(power);
         rightTal.set(ControlMode.PercentOutput, power);
-        
+
     }
-    
+
     // Controls the left side of the drive train
-	public void moveDriveTrainLeft(double power) {
-		left1.set(power);
+    public void moveDriveTrainLeft(double power) {
+        left1.set(power);
         left2.set(power);
         leftTal.set(ControlMode.PercentOutput, power);
     }
-    
+
     public void tankDrive(double left, double right) {
-		differentialDrive.tankDrive(-left, right);
+        differentialDrive.tankDrive(-left, right);
     }
-    
+
     public void arcadeDrive(double forward, double rotation) {
-	    differentialDrive.arcadeDrive(forward, rotation);
-	}
-	
-	public void cheezyDrive(double forward, double rotation) {
-	    differentialDrive.curvatureDrive(forward, rotation, true);
+        differentialDrive.arcadeDrive(forward, rotation);
     }
-    
+
+    public void cheezyDrive(double forward, double rotation) {
+        differentialDrive.curvatureDrive(forward, rotation, true);
+    }
+
     public void initDefaultCommand() {
-		setDefaultCommand(new UserDriveCommand());
+        setDefaultCommand(new UserDriveCommand());
     }
-    
+
     public int getRightPulsesPerRevolution() {
         return rightEnc.getRaw();
     }
 
     public int getLeftPulsesPerRevolution() {
         return leftEnc.getRaw();
+    }
+
+    public double getLeftEncoderRate() {
+        return leftEnc.getRate();
+    }
+
+    public double getRightEncoderRate() {
+        return rightEnc.getRate();
     }
 
 };

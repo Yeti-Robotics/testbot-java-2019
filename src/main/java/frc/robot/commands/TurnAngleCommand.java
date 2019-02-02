@@ -14,7 +14,6 @@ import frc.robot.RobotMap;
 public class TurnAngleCommand extends Command {
 
   private double angle;
-  private double arcLength;
 
   public TurnAngleCommand(double angle) {
     requires(Robot.drivetrainSubsystem);
@@ -24,31 +23,28 @@ public class TurnAngleCommand extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.drivetrainSubsystem.resetEncoders();
-    arcLength = (2.0 * Math.PI * RobotMap.ROBOT_RADIUS) * (angle / 360.0);
+    Robot.drivetrainSubsystem.resetGyro();
+    Robot.drivetrainSubsystem.enableGyroPID(angle);
 
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    if (angle > 0) {
-      Robot.drivetrainSubsystem.tankDrive(0.6, -0.6);
-    } else if (angle < 0) {
-      Robot.drivetrainSubsystem.tankDrive(-0.6, 0.6);
-    }
+    // System.out.println(Robot.drivetrainSubsystem.gyroPIDController.getError() + " -> " + Robot.drivetrainSubsystem.gyroPIDController.get());
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
 
-    return (Math.abs(Robot.drivetrainSubsystem.getRightEncoderValue()) >= Math.abs(arcLength) && (Math.abs(Robot.drivetrainSubsystem.getLeftEncoderValue()) >= Math.abs(arcLength)));
+    return Robot.drivetrainSubsystem.gyroPIDOnTarget();
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
+    Robot.drivetrainSubsystem.disableGyroPID();
   }
 
   // Called when another command which requires one or more of the same

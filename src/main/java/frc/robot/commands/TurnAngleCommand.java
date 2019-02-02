@@ -15,7 +15,7 @@ import frc.robot.RobotMap;
 public class TurnAngleCommand extends Command {
 
   private static final double THRESHOLD = 0;
-  private static final double MIN_SPEED = 0.5;
+  private static final double MIN_SPEED = 0.6;
   private static final double MAX_SPEED = 0.9;
   private static final double SLOW_RANGE = 35;
   private static final double P = 0.015;
@@ -50,6 +50,9 @@ public class TurnAngleCommand extends Command {
     totalError += error;
     double output = (P * error) + I * totalError;
     SmartDashboard.putNumber("output", output);
+    if (output < MIN_SPEED){
+      output = MIN_SPEED;
+    }
     if (angle > 0){
       Robot.drivetrainSubsystem.tankDrive(output, -output);
     } else if (angle < 0){

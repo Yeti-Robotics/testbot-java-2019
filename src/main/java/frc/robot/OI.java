@@ -18,6 +18,7 @@ import frc.robot.commands.ResetEncodersCommand;
 import frc.robot.commands.RunVisionThreadCommand;
 import frc.robot.commands.SenseHatchPanelCommand;
 import frc.robot.commands.TurnAngleCommand;
+import frc.robot.commands.TurnToTargetCommandGroup;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
@@ -50,6 +51,7 @@ public class OI {
     setJoystickButtonWhenPressedCommand(secondaryJoy, 4, new CorrectAzimuthCommand());
     setJoystickButtonWhenPressedCommand(secondaryJoy, 6, new TurnAngleCommand(-90));
     setJoystickButtonWhenPressedCommand(secondaryJoy, 7, new DriveForDistanceCommand(50, 0.6, 0.6));
+    setJoystickButtonWhenPressedCommand(secondaryJoy, 8, new TurnToTargetCommandGroup());
   }
 
   //Gets the Y direction of the left drive joystick

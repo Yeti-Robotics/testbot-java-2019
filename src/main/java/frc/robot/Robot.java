@@ -113,8 +113,15 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
 
-    System.out.println(jevois.getLeftDistance() + "," + jevois.getRightDistance());
-    
+    // System.out.println(jevois.getLeftDistance() + "," + jevois.getRightDistance());
+    SmartDashboard.putNumber("Left Encoder Rate", drivetrainSubsystem.getLeftEncoderRate());
+    SmartDashboard.putNumber("Right Encoder Rate", drivetrainSubsystem.getRightEncoderRate());
+    // System.out.println(drivetrainSubsystem.gyro.getAngle());
+    // double angle = drivetrainSubsystem.gyro.getAngle() % 360;
+    // if (drivetrainSubsystem.gyro.getAngle() < 0) {
+    //     angle *= -1;
+    // }
+    // System.out.println(drivetrainSubsystem.gyro.getAngle() + " -> " + angle);
 
     // String cameraOutput = jevois.readString();
     // // System.out.println(cameraOutput);

@@ -31,7 +31,6 @@ public class DrivetrainSubsystem extends Subsystem {
     private DriveMode driveMode;
     public DigitalInput lineSensorLeft, lineSensorCenter, lineSensorRight;
     public ADXRS450_Gyro gyro;
-    public PIDController gyroPIDController;
 
     public enum DriveMode {
         TANK, ARCADE, CHEEZY;
@@ -46,7 +45,6 @@ public class DrivetrainSubsystem extends Subsystem {
         leftTal = new CustomTalon(RobotMap.LEFT_Drive_TALON);
         rightTal = new CustomTalon(RobotMap.RIGHT_Drive_TALON);
         gyro = new ADXRS450_Gyro();
-        gyro.setPIDSourceType(PIDSourceType.kDisplacement);
         gyro.calibrate();
         SmartDashboard.putData(gyro);
         
@@ -55,18 +53,7 @@ public class DrivetrainSubsystem extends Subsystem {
         SpeedControllerGroup rightSparks = new SpeedControllerGroup(right1, right2, rightTal);
 
         differentialDrive = new DifferentialDrive(leftSparks, rightSparks);
-        gyroPIDController = new PIDController(0.02, 0, 0, gyro, (output) -> {
-            System.out.println(String.format("%s %s %s", 
-            output, 
-            gyroPIDController.getError(),
-            gyroPIDController.onTarget()));
-            differentialDrive.arcadeDrive(output, 0);
-        });
-        gyroPIDController.setInputRange(-360, 360);
-        gyroPIDController.setContinuous(true);
-        gyroPIDController.setOutputRange(-0.6, 0.6);
-        gyroPIDController.setAbsoluteTolerance(0.2);
-        LiveWindow.add(gyroPIDController);
+       
 
         // Creates encoder objects connected to their respective DIO ports
         leftEnc = new Encoder(RobotMap.DRIVE_LEFT_ENCODER[0], RobotMap.DRIVE_LEFT_ENCODER[1], true, EncodingType.k4X);
@@ -93,20 +80,7 @@ public class DrivetrainSubsystem extends Subsystem {
         driveMode = DriveMode.TANK;
 
     }
-    public boolean gyroPIDOnTarget() {
     
-        return gyroPIDController.onTarget();
-    }
-    public void disableGyroPID() {
-
-        gyroPIDController.disable();
-    }
-
-    public void enableGyroPID(double setpoint) {
-
-        gyroPIDController.setSetpoint(setpoint);
-        gyroPIDController.enable();
-    }
 
     public void resetGyro() {
         gyro.reset();

@@ -5,6 +5,17 @@ import numpy as np
 import time
 import re
 from datetime import datetime
+from enum import Enum
+
+
+
+class Contour(Enum):
+    LEFT = 1
+    RIGHT = 2
+
+
+
+
 
 ## Detects stuff for FRC
 #
@@ -24,6 +35,14 @@ from datetime import datetime
 # @restrictions None
 # @ingroup modules
 class YetiVision:
+
+   
+
+
+    
+
+
+
     # ###################################################################################################
     ## Constructor
     def __init__(self):
@@ -136,6 +155,42 @@ class YetiVision:
             contourNum = len(conts) # Gets number of contours
             sortedBy = sorted(conts, key=getArea) # sortedBy now has all the contours sorted by area
             return sortedBy
+
+        def determineContourOrientation(contour):
+            rect = cv2.minAreaRect(contour)
+            box = cv2.boxPoints(rect)
+            box = np.int0(box)
+            sortedBox = sorted(box, key = lambda point: point[1])
+
+            topPoint = sortedBox[0]
+            bottomPoint = sortedBox[3]
+
+            if (topPoint[0] > bottomPoint[0]):
+                return Contour.RIGHT
+            else:
+                return Contour.LEFT
+
+
+
+
+    # make a function to compare 2 contours and return whether they're pairs
+        def compareContours(contourA, contourB):
+            rectA = cv2.minAreaRect(contourA)
+            boxA = cv2.boxPoints(rectA)
+            boxA = np.int0(boxA)
+            sortedBoxA = sorted(boxA, key = lambda point: point[0])
+            rectB = cv2.minAreaRect(contourB)
+            boxB = cv2.boxPoints(rectB)
+            boxB = np.int0(boxB)
+            sortedBoxB = sorted(boxB, key = lambda point: point[0])
+
+            if ((sortedBoxA[0][0] < sortedBoxB[0][0] and determineContourOrientation(contourA) == Contour.LEFT and determineContourOrientation(contourB) == Contour.RIGHT) or 
+                (sortedBoxB[0][0] < sortedBoxA[0][0] and determineContourOrientation(contourB) == Contour.LEFT and determineContourOrientation(contourA) == Contour.RIGHT)):
+                return True
+            else:
+                return False
+
+        
         
         #Draws all contours on original image in red
         # cv2.drawContours(outimg, self.filter_contours_output, -1, (0, 0, 255), 1)
@@ -144,13 +199,24 @@ class YetiVision:
         contourNum = len(self.filter_contours_output)
 
         # Sorts contours by the smallest area first
-        newContours = sortByArea(self.filter_contours_output)       
+        newContours = sortByArea(self.filter_contours_output)
 
+        
+
+        # if contourNum == 3
+        #       get rotated rectangles
+        #       figure out the correct pair
+        #       discard the odd one out
+        #       continue
         
         
         # Send the contour data over Serial
         if(contourNum == 2):
             message = ""
+            if (compareContours(newContours[0], newContours[1])):
+                message = message + "T: "
+            else:
+                message = message + "F: "
             for i in range (contourNum):
                 cnt = newContours[i]
                 x,y,w,h = cv2.boundingRect(cnt) # Get the stats of the contour including width and height

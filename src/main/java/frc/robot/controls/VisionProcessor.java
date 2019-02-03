@@ -18,6 +18,7 @@ import frc.robot.RobotMap;
  */
 public class VisionProcessor {
     private static Contour rightCon, leftCon;
+    // left distance, center distance, azimuth 
 
 
     
@@ -41,6 +42,11 @@ public class VisionProcessor {
         double azimuth = (centerX*RobotMap.FOV/RobotMap.IMAGE_WIDTH) - (RobotMap.FOV/2);
         return azimuth;
         
+    }
+
+    public static double getCenterDistance(Contour leftCon, Contour rightContour) {
+        double centerDistance = (14.25 * RobotMap.FOCAL_LENGTH) / boundRect(leftCon, rightCon).width;
+        return centerDistance; 
     }
 
 }

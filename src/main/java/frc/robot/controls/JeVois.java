@@ -10,6 +10,8 @@ package frc.robot.controls;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.opencv.core.Rect;
+
 import edu.wpi.first.hal.util.UncleanStatusException;
 import edu.wpi.first.wpilibj.SerialPort;
 import frc.robot.Robot;
@@ -20,30 +22,35 @@ import frc.robot.RobotMap;
  */
 public class JeVois {
     SerialPort jevois;
-    Contour leftCon,rightCon;
-
-
+    Contour[] contours;
 
     public JeVois() {
         try {
             jevois = new SerialPort(RobotMap.JEVOIS_BAUD_RATE, SerialPort.Port.kUSB);
         } catch (UncleanStatusException e) {
-        }   
+        }
     }
 
-    
     public double getLeftDistance() {
-        double leftDistance = -1;
-        if (Robot.contourList.size() > 0)
-            leftDistance = (RobotMap.TAPE_BOUND_WIDTH_INCH * RobotMap.FOCAL_LENGTH) / Robot.contourList.get(0)[0].w;
+        contours = parseStream();
+
+        double leftDistance;
+        if (contours != null){
+        leftDistance = (RobotMap.TAPE_BOUND_WIDTH_INCH * RobotMap.FOCAL_LENGTH) / contours[0].w;
         return leftDistance;
+        }
+        return -1;
     }
 
     public double getRightDistance() {
-        double rightDistance = -1;
-       if (Robot.contourList.size() > 0)
-            rightDistance = (RobotMap.TAPE_BOUND_WIDTH_INCH * RobotMap.FOCAL_LENGTH) / Robot.contourList.get(0)[1].w;
+        contours = parseStream();
+
+        double rightDistance;
+        if (contours != null){
+        rightDistance = (RobotMap.TAPE_BOUND_WIDTH_INCH * RobotMap.FOCAL_LENGTH) / contours[1].w;
         return rightDistance;
+        }
+        return -1;
     }
 
     public Contour[] parseStream() {
@@ -59,11 +66,10 @@ public class JeVois {
             if (contourStrings.length == 2) {
                 for (String contourString : contourStrings) {
                     String[] contourValues = contourString.split(",");
-                    Contour contour = new Contour(contourValues[0].trim(), contourValues[1].trim(), contourValues[2].trim(),
-                            contourValues[3].trim(), contourValues[4].trim());
+                    Contour contour = new Contour(contourValues[0].trim(), contourValues[1].trim(),
+                            contourValues[2].trim(), contourValues[3].trim(), contourValues[4].trim());
                     // System.out.println("output2: " + contour.toString());
                     contours.add(contour);
-                
 
                 }
                 Contour[] contoursArray = { contours.get(0), contours.get(1) };
@@ -72,5 +78,18 @@ public class JeVois {
 
         }
         return null;
+    }
+
+    public Rect boundRect() {
+        contours = parseStream();
+        return new Rect(contours[0].x, contours[0].y, (contours[1].x + contours[1].w) - contours[0].x, contours[1].h);
+    }
+
+    public double getAzimuth() {
+        Rect boundRect = boundRect();
+        double centerX = (boundRect.x + boundRect.width/2);
+        double azimuth = (centerX * RobotMap.FOV / RobotMap.IMAGE_WIDTH) - (RobotMap.FOV / 2);
+        return azimuth;
+
     }
 }

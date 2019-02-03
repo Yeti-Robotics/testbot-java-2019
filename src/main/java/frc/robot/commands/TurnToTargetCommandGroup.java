@@ -30,10 +30,13 @@ public class TurnToTargetCommandGroup extends CommandGroup {
     if(contours != null){
       double azimuth = VisionProcessor.getAzimuth(contours[0], contours[1]);
       System.out.println(azimuth);
+
       turnAngleCommand = new TurnAngleCommand(azimuth);
       turnAngleCommand.start();
     } else {
+      System.out.println("cancelling");
       this.cancel();
+      System.out.println("canceled");
     }
   }
 

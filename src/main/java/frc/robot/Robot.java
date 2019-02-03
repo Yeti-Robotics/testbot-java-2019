@@ -9,6 +9,13 @@
 
 package frc.robot;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -20,17 +27,6 @@ import frc.robot.controls.JeVois;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.HatchPanelSubsystem;
 import frc.robot.subsystems.ShiftGearsSubsystem;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-
-import edu.wpi.first.vision.VisionRunner;
-import edu.wpi.first.vision.VisionThread;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.SerialPort;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -51,6 +47,7 @@ public class Robot extends TimedRobot {
   public static boolean runVisionThread = false;
   public static JeVois jevois;
   public static List<Contour[]> contourList = new ArrayList<>();
+  public static Contour[] latestContours;
   static Object imgLock = new Object();
 
   Command m_autonomousCommand;
@@ -69,18 +66,23 @@ public class Robot extends TimedRobot {
     jevois = new JeVois();
     oi = new OI();
     new Timer().scheduleAtFixedRate(new TimerTask(){
+      long lastLoop = System.currentTimeMillis();
     
       @Override
       public void run() {
           Contour[] contours = jevois.parseStream();
           if (contours != null) {
             contourList.add(contours);
-            // System.out.println(contourList.get(0)[0] + "," + contourList.get(0)[1]);
+            latestContours = contours;
+            System.out.println(Arrays.toString(latestContours));
             if (contourList.size() > 10){
               contourList.remove(0);
             }
+            lastLoop = System.currentTimeMillis();
           }
-          
+          if (System.currentTimeMillis() - lastLoop > 3000) {
+            latestContours = null;
+          }
       }
     }, 20L, 20L);
     
@@ -116,49 +118,6 @@ public class Robot extends TimedRobot {
     // System.out.println(jevois.getLeftDistance() + "," + jevois.getRightDistance());
     SmartDashboard.putNumber("Left Encoder Rate", drivetrainSubsystem.getLeftEncoderRate());
     SmartDashboard.putNumber("Right Encoder Rate", drivetrainSubsystem.getRightEncoderRate());
-    // System.out.println(drivetrainSubsystem.gyro.getAngle());
-    // double angle = drivetrainSubsystem.gyro.getAngle() % 360;
-    // if (drivetrainSubsystem.gyro.getAngle() < 0) {
-    //     angle *= -1;
-    // }
-    // System.out.println(drivetrainSubsystem.gyro.getAngle() + " -> " + angle);
-
-    // String cameraOutput = jevois.readString();
-    // // System.out.println(cameraOutput);
-    // if(cameraOutput != null && !cameraOutput.isEmpty()) {
-    // List<Contour> contours = new ArrayList<Contour>();
-    // String[] contourStrings = cameraOutput.split("\\|");
-
-    // System.out.println("output: " + cameraOutput);
-
-    // for (String contourString : contourStrings) {
-    // contourString = contourString.replace("\n", "");
-    // System.out.println(contourString);
-    // String[] contourValues = contourString.split(",");
-    // // if (contourValues.length == 5) {
-    // Contour contour = new Contour(contourValues[0], contourValues[1],
-    // contourValues[2],
-    // contourValues[3], contourValues[4]);
-    // contours.add(contour);
-    // System.out.println("output2: " + contour.toString());
-
-    // // }
-    // }
-
-    // visionProcessor = new VisionProcessor(contours.get(0), contours.get(1));
-
-    // System.out.println(visionProcessor.getLeftDistance() + "," +
-    // visionProcessor.getRightDistance());
-    // System.out.println(contours.toString());
-
-    // }
-    // System.out.println(cameraOutput);
-
-    // System.out.println(drivetrainSubsystem.getLeftEncoderValue() + "," +
-    // drivetrainSubsystem.getRightEncoderValue());
-    // System.out.println(drivetrainSubsystem.getLeftPulsesPerRevolution() + "," +
-    // drivetrainSubsystem.getRightPulsesPerRevolution());
-
   }
 
   /**

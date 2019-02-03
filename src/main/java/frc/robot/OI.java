@@ -8,7 +8,10 @@
 package frc.robot;
 
 
-import frc.robot.commands.CorrectAzimuthCommand;
+import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.commands.DeployHatchPanelCommandGroup;
 import frc.robot.commands.DriveForDistanceCommand;
 import frc.robot.commands.DriveTrainHighShiftCommand;
@@ -16,13 +19,8 @@ import frc.robot.commands.DriveTrainLowShiftCommand;
 import frc.robot.commands.LineFollowCommand;
 import frc.robot.commands.ResetEncodersCommand;
 import frc.robot.commands.RunVisionThreadCommand;
-import frc.robot.commands.SenseHatchPanelCommand;
 import frc.robot.commands.TurnAngleCommand;
 import frc.robot.commands.TurnToTargetCommandGroup;
-import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.buttons.JoystickButton;
-import edu.wpi.first.wpilibj.command.Command;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -48,7 +46,7 @@ public class OI {
     setJoystickButtonWhenPressedCommand(secondaryJoy, 2, new RunVisionThreadCommand());
     setJoystickButtonWhenPressedCommand(secondaryJoy, 3, new LineFollowCommand());
     setJoystickButtonWhenPressedCommand(secondaryJoy, 5, new ResetEncodersCommand());
-    setJoystickButtonWhenPressedCommand(secondaryJoy, 4, new CorrectAzimuthCommand());
+    // setJoystickButtonWhenPressedCommand(secondaryJoy, 4, new CorrectAzimuthCommand());
     setJoystickButtonWhenPressedCommand(secondaryJoy, 6, new TurnAngleCommand(-90));
     setJoystickButtonWhenPressedCommand(secondaryJoy, 7, new DriveForDistanceCommand(50, 0.6, 0.6));
     setJoystickButtonWhenPressedCommand(secondaryJoy, 8, new TurnToTargetCommandGroup());

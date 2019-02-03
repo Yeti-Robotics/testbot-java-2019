@@ -13,6 +13,7 @@ import frc.robot.Robot;
 public class LineFollowCommand extends Command {
   public LineFollowCommand() {
     requires(Robot.drivetrainSubsystem);
+    setTimeout(0.5);
   }
 
   // Called just before this Command runs the first time
@@ -43,13 +44,14 @@ public class LineFollowCommand extends Command {
       Robot.drivetrainSubsystem.tankDrive(0.0, 0.0);
       break;
     }
+    
 
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return false;
+    return isTimedOut();
   }
 
   // Called once after isFinished returns true

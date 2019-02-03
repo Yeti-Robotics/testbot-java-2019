@@ -14,7 +14,6 @@ import frc.robot.controls.VisionProcessor;
 
 public class TurnToTargetCommandGroup extends CommandGroup {
   
-
   Contour[] contours;
   double azimuth;
   TurnAngleCommand turnAngleCommand;
@@ -27,9 +26,8 @@ public class TurnToTargetCommandGroup extends CommandGroup {
 
   @Override
   protected void initialize() {
-    contours = Robot.jevois.parseStream();
+    contours = Robot.latestContours;
     if(contours != null){
-      contours = Robot.contourList.get(Robot.contourList.size()-1);
       double azimuth = VisionProcessor.getAzimuth(contours[0], contours[1]);
       System.out.println(azimuth);
       turnAngleCommand = new TurnAngleCommand(azimuth);
@@ -37,11 +35,14 @@ public class TurnToTargetCommandGroup extends CommandGroup {
     } else {
       this.cancel();
     }
-
   }
 
   @Override
   protected boolean isFinished() {
-    return turnAngleCommand.isFinished() || isTimedOut();
+    if(turnAngleCommand == null){
+       return isTimedOut();
+    } else{
+      return turnAngleCommand.isFinished() || isTimedOut();
+    }
   }
 }

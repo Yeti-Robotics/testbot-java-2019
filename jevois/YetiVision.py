@@ -61,7 +61,7 @@ class YetiVision:
 
         self.__hsv_threshold_input = self.resize_image_output
         self.__hsv_threshold_hue = np.array([63.12949640287769, 95.15151515151516])
-        self.__hsv_threshold_saturation = np.array([176.57374100719423, 255.0])
+        self.__hsv_threshold_saturation = np.array([149.0, 255.0])
         self.__hsv_threshold_value = np.array([146.76258992805754, 255.0])
 
         self.hsv_threshold_output = None
@@ -208,15 +208,32 @@ class YetiVision:
         #       figure out the correct pair
         #       discard the odd one out
         #       continue
+
+        message = ""
+
+        if (contourNum == 3):
+            
+            if (compareContours(newContours[0], newContours[1])):
+                message = message + "Left Pair: "
+                newContours.pop(2)
+            else:
+                message = message + "Right Pair: "
+                newContours.pop(0)
+            contourNum = 2
+
+
+
+
+
         
         
         # Send the contour data over Serial
         if(contourNum == 2):
-            message = ""
-            if (compareContours(newContours[0], newContours[1])):
-                message = message + "T: "
-            else:
-                message = message + "F: "
+            # message = ""
+            # if (compareContours(newContours[0], newContours[1])):
+            #     message = message + "T: "
+            # else:
+            #     message = message + "F: "
             for i in range (contourNum):
                 cnt = newContours[i]
                 x,y,w,h = cv2.boundingRect(cnt) # Get the stats of the contour including width and height
@@ -248,8 +265,8 @@ class YetiVision:
 
         # # Convert our BGR output image to video output format and send to host over USB. If your output image is not
         # # BGR, you can use sendCvGRAY(), sendCvRGB(), or sendCvRGBA() as appropriate:
-        # outframe.sendCvBGR(outimg)
-        # # outframe.sendCvGRAY(outimg)
+        outframe.sendCvBGR(outimg)
+        # outframe.sendCvGRAY(outimg)
         
         
     # ###################################################################################################

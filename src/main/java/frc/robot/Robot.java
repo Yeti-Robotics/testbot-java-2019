@@ -25,6 +25,7 @@ import frc.robot.commands.UserDriveCommand;
 import frc.robot.controls.Contour;
 import frc.robot.controls.JeVois;
 import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.HatchPanelSubsystem;
 import frc.robot.subsystems.ShiftGearsSubsystem;
 
@@ -44,6 +45,7 @@ public class Robot extends TimedRobot {
   public static ShiftGearsSubsystem shiftGearsSubsystem;
   public static DriverStation driverStation;
   public static HatchPanelSubsystem hatchPanelSubsystem;
+  public static ElevatorSubsystem elevatorSubsystem;
   public static boolean runVisionThread = false;
   public static JeVois jevois;
   public static List<Contour[]> contourList = new ArrayList<>();

@@ -27,6 +27,7 @@ import frc.robot.controls.JeVois;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.HatchPanelSubsystem;
 import frc.robot.subsystems.ShiftGearsSubsystem;
+import frc.robot.subsystems.WristSubsystem;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -44,6 +45,7 @@ public class Robot extends TimedRobot {
   public static ShiftGearsSubsystem shiftGearsSubsystem;
   public static DriverStation driverStation;
   public static HatchPanelSubsystem hatchPanelSubsystem;
+  public static WristSubsystem wristSubsystem;
   public static boolean runVisionThread = false;
   public static JeVois jevois;
   public static List<Contour[]> contourList = new ArrayList<>();

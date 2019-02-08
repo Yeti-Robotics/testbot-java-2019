@@ -24,6 +24,9 @@ public class RobotMap {
   public static final int LEFT_JOYSTICK = 0;
   public static final int RIGHT_JOYSTICK = 1;
   public static final int SECONDARY_JOYSTICK = 2;
+
+  // Climber Constants
+  public static final double CLIMBER_SPEED = 0.75;
  
   // Drive train sparks
 	public static final int LEFT_1_SPARK = 2;
@@ -34,6 +37,14 @@ public class RobotMap {
   // Drive train talons
   public static final int LEFT_Drive_TALON = 5;
   public static final int RIGHT_Drive_TALON = 6;
+
+  // Othern Talons
+  public static final int Rack_TALON = 2;
+  public static final int CLIMBER_TALON = 3;
+  public static final int WRIST_TALON = 4;
+ 
+  // Victors
+  public static final int CLIMBER_VICTOR = 2;
   
   // Encoders
   public static final int[] DRIVE_LEFT_ENCODER = { 7, 8 };
@@ -50,6 +61,10 @@ public class RobotMap {
   // Hatch Panel Limit Switches
   public static final int LEFT_HATCH_PANEL_LIMIT = 1;
   public static final int RIGHT_HATCH_PANEL_LIMIT = 0;
+
+  // Climber Limit Switches
+  public static final int UPPER_LIMIT = 2;
+  public static final int LOWER_LIMIT = 3;
 
   // Vision Constants
   public static final int IMAGE_WIDTH = 320;

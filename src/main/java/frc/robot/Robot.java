@@ -85,7 +85,7 @@ public class Robot extends TimedRobot {
           if (contours != null) {
             contourList.add(contours);
             latestContours = contours;
-            System.out.println(Arrays.toString(latestContours));
+            // System.out.println(Arrays.toString(latestContours));
             if (contourList.size() > 10){
               contourList.remove(0);
             }
@@ -132,7 +132,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Left Line Follower Voltage", drivetrainSubsystem.lineSensorLeft.getAverageVoltage());
     SmartDashboard.putNumber("Center Line Follower Voltage", drivetrainSubsystem.lineSensorCenter.getAverageVoltage());
     SmartDashboard.putNumber("Right Line Follower Voltage", drivetrainSubsystem.lineSensorRight.getAverageVoltage());
-    SmartDashboard.putNumber("Left Distance", jevois.getLeftDistance());
+    // SmartDashboard.putNumber("Left Distance", jevois.getLeftDistance());
   }
 
   /**

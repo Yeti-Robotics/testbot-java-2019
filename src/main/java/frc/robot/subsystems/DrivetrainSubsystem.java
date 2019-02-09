@@ -6,6 +6,7 @@ import frc.robot.controls.CustomTalon;
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.AnalogGyro;
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PIDController;
@@ -29,7 +30,7 @@ public class DrivetrainSubsystem extends Subsystem {
     private Encoder leftEnc, rightEnc;
     private DifferentialDrive differentialDrive;
     private DriveMode driveMode;
-    public DigitalInput lineSensorLeft, lineSensorCenter, lineSensorRight;
+    public AnalogInput lineSensorLeft, lineSensorCenter, lineSensorRight;
     public ADXRS450_Gyro gyro;
 
     public enum DriveMode {
@@ -70,9 +71,9 @@ public class DrivetrainSubsystem extends Subsystem {
         left1.setInverted(true);
         left2.setInverted(true);
 
-        lineSensorLeft = new DigitalInput(RobotMap.LEFT_LINE_FOLLOW);
-        lineSensorCenter = new DigitalInput(RobotMap.CENTER_LINE_FOLLOW);
-        lineSensorRight = new DigitalInput(RobotMap.RIGHT_LINE_FOLLOW);
+        lineSensorLeft = new AnalogInput(RobotMap.LEFT_LINE_FOLLOW);
+        lineSensorCenter = new AnalogInput(RobotMap.CENTER_LINE_FOLLOW);
+        lineSensorRight = new AnalogInput(RobotMap.RIGHT_LINE_FOLLOW);
 
         SmartDashboard.putNumber("Left drive distance", getLeftEncoderValue());
         SmartDashboard.putNumber("Right drive distance", getRightEncoderValue());

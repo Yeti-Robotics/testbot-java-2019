@@ -13,7 +13,6 @@ import frc.robot.Robot;
 public class LineFollowCommand extends Command {
   public LineFollowCommand() {
     requires(Robot.drivetrainSubsystem);
-    // setTimeout(50);
   }
 
   // Called just before this Command runs the first time

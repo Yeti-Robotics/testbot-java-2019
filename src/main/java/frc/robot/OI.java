@@ -7,7 +7,6 @@
 
 package frc.robot;
 
-
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
@@ -27,57 +26,70 @@ import frc.robot.commands.TurnToTargetCommandGroup;
  * interface to the commands and command groups that allow control of the robot.
  */
 public class OI {
-  private Joystick leftJoy, rightJoy, secondaryJoy;
-  
-  public OI(){
-  //Creates joystick objects for use
-  leftJoy = new Joystick(RobotMap.LEFT_JOYSTICK);
-  rightJoy = new Joystick(RobotMap.RIGHT_JOYSTICK);
-  secondaryJoy = new Joystick(RobotMap.SECONDARY_JOYSTICK);
+  private Joystick leftJoy, rightJoy, driverstationJoy, secondaryJoy;
 
-    //Left joystick buttons
-		setJoystickButtonWhenPressedCommand(leftJoy, 1, new DriveTrainHighShiftCommand());
-		
-		//Right joystick buttons
+  public OI() {
+    // Creates joystick objects for use
+    leftJoy = new Joystick(RobotMap.LEFT_JOYSTICK);
+    rightJoy = new Joystick(RobotMap.RIGHT_JOYSTICK);
+    driverstationJoy = new Joystick(RobotMap.LEFT_JOYSTICK);
+    secondaryJoy = new Joystick(RobotMap.SECONDARY_JOYSTICK);
+
+    // Left joystick buttons
+    setJoystickButtonWhenPressedCommand(leftJoy, 1, new DriveTrainHighShiftCommand());
+
+    // Right joystick buttons
     setJoystickButtonWhenPressedCommand(rightJoy, 1, new DriveTrainLowShiftCommand());
-    
-    //Secondary Joystick Buttons
+
+    // Secondary Joystick Buttons
     setJoystickButtonWhenPressedCommand(secondaryJoy, 1, new DeployHatchPanelCommandGroup());
     setJoystickButtonWhenPressedCommand(secondaryJoy, 2, new RunVisionThreadCommand());
-    setJoystickButtonWhenPressedCommand(secondaryJoy, 3, new LineFollowCommand());
+    setJoystickButtonWhenPressedCommand(secondaryJoy, 1, new LineFollowCommand());
     setJoystickButtonWhenPressedCommand(secondaryJoy, 5, new ResetEncodersCommand());
     // setJoystickButtonWhenPressedCommand(secondaryJoy, 4, new CorrectAzimuthCommand());
     setJoystickButtonWhenPressedCommand(secondaryJoy, 6, new TurnAngleCommand(-90));
     setJoystickButtonWhenPressedCommand(secondaryJoy, 7, new DriveForDistanceCommand(50, 0.6, 0.6));
     setJoystickButtonWhenPressedCommand(secondaryJoy, 8, new TurnToTargetCommandGroup());
+    setJoystickButtonWhenPressedCommand(secondaryJoy, 11, new DriveTrainLowShiftCommand());
+    setJoystickButtonWhenPressedCommand(secondaryJoy, 12, new DriveTrainHighShiftCommand());
   }
 
-  //Gets the Y direction of the left drive joystick
-	public double getLeftY() {
+  // Gets the Y direction of the left drive joystick
+  public double getLeftY() {
     return leftJoy.getY();
-}
+  }
 
-//Gets the Y direction of the left drive joystick
-public double getLeftX() {
-  return leftJoy.getX();
-}
+  // Gets the Y direction of the left drive joystick
+  public double getLeftX() {
+    return leftJoy.getX();
+  }
 
-//Gets the Y direction of the right drive joystick
-public double getRightY() {
+  // Gets the Y direction of the right drive joystick
+  public double getRightY() {
     return rightJoy.getY();
-}
+  }
 
-//Gets the X direction of the right drive joystick
-public double getRightX() {
-  return rightJoy.getX();
-}
+  // Gets the X direction of the right drive joystick
+  public double getRightX() {
+    return rightJoy.getX();
+  }
 
-private void setJoystickButtonWhenPressedCommand(GenericHID joystick, int button, Command command) {
-  new JoystickButton(joystick, button).whenPressed(command);
-}
+  public double getDriverstationLeftY() {
+    return driverstationJoy.getRawAxis(1);
+  }
 
-private void setJoystickButtonWhileHeldCommand(GenericHID joystick, int button, Command command){
-  new JoystickButton(joystick, button).whileHeld(command);
-}
+  public double getDriverstationRightY() {
+    return driverstationJoy.getRawAxis(3);
+  }
+
+
+
+  private void setJoystickButtonWhenPressedCommand(GenericHID joystick, int button, Command command) {
+    new JoystickButton(joystick, button).whenPressed(command);
+  }
+
+  private void setJoystickButtonWhileHeldCommand(GenericHID joystick, int button, Command command) {
+    new JoystickButton(joystick, button).whileHeld(command);
+  }
 
 };

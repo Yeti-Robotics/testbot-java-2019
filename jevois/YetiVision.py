@@ -193,7 +193,7 @@ class YetiVision:
         
         
         #Draws all contours on original image in red
-        # cv2.drawContours(outimg, self.filter_contours_output, -1, (0, 0, 255), 1)
+        
         
         # Gets number of contours
         contourNum = len(self.filter_contours_output)
@@ -253,52 +253,14 @@ class YetiVision:
                     message = message + "|"
 
         
-            jevois.sendSerial(message)            
-        # Write a title:
-        # cv2.putText(outimg, "YetiVision", (3, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 1, cv2.LINE_AA)
-        
-        # # Write frames/s info from our timer into the edge map (NOTE: does not account for output conversion time):
-        # fps = self.timer.stop()
-        # #height, width, channels = outimg.shape # if outimg is grayscale, change to: height, width = outimg.shape
-        # height, width, channels = outimg.shape
-        # cv2.putText(outimg, fps, (3, height - 6), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 1, cv2.LINE_AA)
+            jevois.sendSerial(message)    
 
-        # # Convert our BGR output image to video output format and send to host over USB. If your output image is not
-        # # BGR, you can use sendCvGRAY(), sendCvRGB(), or sendCvRGBA() as appropriate:
+            cv2.drawContours(outimg, self.filter_contours_output, -1, (0, 0, 255), 1)        
+        
         outframe.sendCvBGR(outimg)
-        # outframe.sendCvGRAY(outimg)
         
         
     # ###################################################################################################
-    ## Parse a serial command forwarded to us by the JeVois Engine, return a string
-    def parseSerial(self, str):
-
-        if(str.strip() == ""):
-            #For some reason, the jevois engine sometimes sends empty strings.
-            # Just do nothing in this case.
-            return ""
-
-        jevois.LINFO("parseserial received command [{}]".format(str))
-        if str == "hello":
-            return self.hello()
-        elif str == "Geevoooice":
-            return self.hi()
-        return "ERR: Unsupported command. "
-
-    # ###################################################################################################
-    ## Return a string that describes the custom commands we support, for the JeVois help message
-    def supportedCommands(self):
-        # use \n seperator if your module supports several commands
-        return "hello - print hello using python"
-
-    # ###################################################################################################
-    ## Internal method that gets invoked as a custom command
-    def hello(self):
-        return "Hello from python!"
-    
-    def hi(self):
-        return "Hi from python!"
-
             
     @staticmethod
     def __hsv_threshold(input, hue, sat, val):

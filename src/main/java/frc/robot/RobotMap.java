@@ -24,6 +24,7 @@ public class RobotMap {
   public static final int LEFT_JOYSTICK = 0;
   public static final int RIGHT_JOYSTICK = 1;
   public static final int SECONDARY_JOYSTICK = 2;
+  
 
   // Climber Constants
   public static final double CLIMBER_SPEED = 0.75;

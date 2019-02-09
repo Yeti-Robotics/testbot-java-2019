@@ -15,6 +15,9 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import edu.wpi.cscore.UsbCamera;
+import edu.wpi.cscore.VideoMode;
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
@@ -69,6 +72,10 @@ public class Robot extends TimedRobot {
     driverStation = DriverStation.getInstance();
     jevois = new JeVois();
     oi = new OI();
+
+    UsbCamera driveCamera = CameraServer.getInstance().startAutomaticCapture(0);
+    driveCamera.setVideoMode(VideoMode.PixelFormat.kYUYV, 320, 240, 30);
+
     new Timer().scheduleAtFixedRate(new TimerTask(){
       long lastLoop = System.currentTimeMillis();
     

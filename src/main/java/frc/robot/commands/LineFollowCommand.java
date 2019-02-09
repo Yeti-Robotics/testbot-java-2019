@@ -13,7 +13,7 @@ import frc.robot.Robot;
 public class LineFollowCommand extends Command {
   public LineFollowCommand() {
     requires(Robot.drivetrainSubsystem);
-    setTimeout(0.5);
+    // setTimeout(50);
   }
 
   // Called just before this Command runs the first time
@@ -24,9 +24,9 @@ public class LineFollowCommand extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    String left = Robot.drivetrainSubsystem.lineSensorLeft.get() ? "1" : "0";
-    String center = Robot.drivetrainSubsystem.lineSensorCenter.get() ? "1" : "0";
-    String right = Robot.drivetrainSubsystem.lineSensorRight.get() ? "1" : "0";
+    String left = Robot.drivetrainSubsystem.lineSensorLeft.getAverageVoltage() > 1.0 ? "1" : "0";
+    String center = Robot.drivetrainSubsystem.lineSensorCenter.getAverageVoltage() > 1.0 ? "1" : "0";
+    String right = Robot.drivetrainSubsystem.lineSensorRight.getAverageVoltage() > 1.0 ? "1" : "0";
     String lineFollow = left + center + right;
     switch (lineFollow) {
     case "010":
@@ -51,7 +51,7 @@ public class LineFollowCommand extends Command {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return isTimedOut();
+    return Robot.jevois.getLeftDistance() <= 35;
   }
 
   // Called once after isFinished returns true

@@ -39,7 +39,7 @@ public class JeVois {
         leftDistance = (RobotMap.TAPE_BOUND_WIDTH_INCH * RobotMap.FOCAL_LENGTH) / contours[0].w;
         return leftDistance;
         }
-        return -1;
+        return 1000;
     }
 
     public double getRightDistance() {
@@ -50,7 +50,7 @@ public class JeVois {
         rightDistance = (RobotMap.TAPE_BOUND_WIDTH_INCH * RobotMap.FOCAL_LENGTH) / contours[1].w;
         return rightDistance;
         }
-        return -1;
+        return 1000;
     }
 
     public Contour[] parseStream() {

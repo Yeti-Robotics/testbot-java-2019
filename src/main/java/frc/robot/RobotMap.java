@@ -81,7 +81,7 @@ public class RobotMap {
   
 
   // Line Following Constants
-  public static final int LEFT_LINE_FOLLOW = 4;
-  public static final int CENTER_LINE_FOLLOW = 3;
-  public static final int RIGHT_LINE_FOLLOW = 2;
+  public static final int LEFT_LINE_FOLLOW = 2;
+  public static final int CENTER_LINE_FOLLOW = 1;
+  public static final int RIGHT_LINE_FOLLOW = 0;
 }

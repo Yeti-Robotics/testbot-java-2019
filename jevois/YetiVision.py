@@ -116,38 +116,38 @@ class YetiVision:
             return cy
 
         def sortLeftToRight(contours):
-            return sorted(contours, key = lambda contour: getXcoord(contour))
+            contourBoxes = []
+            for contour in contours:
+                rect = cv2.minAreaRect(contour)
+                box = cv2.boxPoints(rect)
+                box = np.int0(box)
+                sortedBox = sorted(box, key = lambda point: point[0])
+                contourBoxes.append(sortedBox)
+            return sorted(contourBoxes, key = lambda box: box[0][0])
 
         def determineContourOrientation(contour):
-            rect = cv2.minAreaRect(contour)
-            box = cv2.boxPoints(rect)
-            box = np.int0(box)
-            sortedBox = sorted(box, key = lambda point: point[0])
+            sortedBox = sorted(contour, key = lambda point: point[0])
 
             leftPoint = sortedBox[0]
             rightPoint = sortedBox[3]
 
-            if leftPoint[0] > rightPoint[1]:
+            if leftPoint[1] < rightPoint[1]:
                 return Contour.RIGHT
             else:
                 return Contour.LEFT
 
     # make a function to compare 2 contours and return whether they're pairs
         def compareContours(contourA, contourB):
-            rectA = cv2.minAreaRect(contourA)
-            boxA = cv2.boxPoints(rectA)
-            boxA = np.int0(boxA)
-            sortedBoxA = sorted(boxA, key = lambda point: point[1])
-            rectB = cv2.minAreaRect(contourB)
-            boxB = cv2.boxPoints(rectB)
-            boxB = np.int0(boxB)
-            sortedBoxB = sorted(boxB, key = lambda point: point[1])
+            sortedBoxA = sorted(contourA, key = lambda point: point[1])
+            sortedBoxB = sorted(contourB, key = lambda point: point[1])
 
-            cv2.drawContours(outimg,[boxA],0,(0,255,0),2)
-            cv2.drawContours(outimg,[boxB],0,(0,255,0),2)
+            # jevois.sendSerial("{}|{}".format(sortedBoxA, sortedBoxB))
 
-            if (sortedBoxA[0][0] < sortedBoxB[0][0] and determineContourOrientation(contourA) == Contour.LEFT and determineContourOrientation(contourB) == Contour.RIGHT) or 
-                (sortedBoxB[0][0] < sortedBoxA[0][0] and determineContourOrientation(contourB) == Contour.LEFT and determineContourOrientation(contourA) == Contour.RIGHT):
+            # cv2.drawContours(outimg,[boxA],0,(0,255,0),2)
+            # cv2.drawContours(outimg,[boxB],0,(0,255,0),2)
+
+            if ((sortedBoxA[0][0] < sortedBoxB[0][0] and determineContourOrientation(contourA) == Contour.LEFT and determineContourOrientation(contourB) == Contour.RIGHT) or 
+                (sortedBoxB[0][0] < sortedBoxA[0][0] and determineContourOrientation(contourB) == Contour.LEFT and determineContourOrientation(contourA) == Contour.RIGHT)):
                 return True
             else:
                 return False
@@ -167,9 +167,10 @@ class YetiVision:
             return "{},{},{},{},{}".format(area, x, y, h, w)
         
         if len(self.filter_contours_output) > 1:
+            # jevois.sendSerial("{}".format(sortLeftToRight(self.filter_contours_output)))
             leftContour, rightContour, *otherContours = sortLeftToRight(self.filter_contours_output)
             # compareContours(leftContour, rightContour)
-            jevois.sendSerial("{}|{}".format(formatContour(leftContour), formatContour(rightContour)))
+            # jevois.sendSerial("{}|{}||{}".format(formatContour(leftContour), formatContour(rightContour), len(otherContours)))
             # cv2.circle(outimg, (getXcoord(contourPair.leftCon), getYcoord(contourPair.rightCon)), 10, (0,255,0), 2)
             # cv2.circle(outimg, (getXcoord(contourPair.leftCon), getYcoord(contourPair.rightCon)), 10, (0,255,0), 2)
             if (not (len(self.filter_contours_output) == 2 and not compareContours(leftContour, rightContour))):
@@ -196,7 +197,7 @@ class YetiVision:
                 cv2.drawContours(outimg, [contourPair.leftCon], -1, (0, 0, 255), 1)
                 cv2.drawContours(outimg, [contourPair.rightCon], -1, (0, 0, 255), 1)
                 cv2.circle(outimg, (getXcoord(contourPair.leftCon), getYcoord(contourPair.leftCon)), 10, (0,255,0), 2)
-                cv2.circle(outimg, (getXcoord(contourPair.rightCon), getYcoord(contourPair.rightCon)), 10, (0,255,0), 2)
+                cv2.circle(outimg, (getXcoord(contourPair.rightCon), getYcoord(contourPair.rightCon)), 10, (0,255,0), 2)                                                                                                                                        
 
         
         outframe.sendCvBGR(outimg)

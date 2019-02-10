@@ -153,18 +153,21 @@ class YetiVision:
                 return False
 
         def getContourPairCenter(contourPair):
-            return (getXcoord(contourPair.leftCon) + getXcoord(contourPair.rightCon)) / 2
+            leftContour = sorted(contourPair.leftCon, key = lambda point: point[0])
+            rightContour = sorted(contourPair.rightCon, key = lambda point: point[0])
+            return (leftContour[0][0] + rightContour[3][0]) / 2
         
         def formatContour(contour):
-            x,y,w,h = cv2.boundingRect(contour) # Get the stats of the contour including width and height
+            x,y,w,h = cv2.boundingRect(np.array(contour)) # Get the stats of the contour including width and height
         
-            area = str(getArea(contour))
+            area = str(w * h)
             x = str(x)
             y = str(y)
             h = str(h)
             w = str(w)
             
             return "{},{},{},{},{}".format(area, x, y, h, w)
+
         
         if len(self.filter_contours_output) > 1:
             # jevois.sendSerial("{}".format(sortLeftToRight(self.filter_contours_output)))
@@ -187,17 +190,19 @@ class YetiVision:
                     for i in range(0, len(otherContours), 2):
                         contourPairs.append(ContourPair(otherContours[i], otherContours[i + 1]))
                 
+                
+
                 sortedContours = sorted(contourPairs, key = lambda pair: abs((160 - getContourPairCenter(pair))))
 
-                contourPair = sortLeftToRight(sortedContours)[0]
+                contourPair = sortedContours[0]
 
                 message = "{}|{}".format(formatContour(contourPair.leftCon), formatContour(contourPair.rightCon))
             
                 jevois.sendSerial(message)
-                cv2.drawContours(outimg, [contourPair.leftCon], -1, (0, 0, 255), 1)
-                cv2.drawContours(outimg, [contourPair.rightCon], -1, (0, 0, 255), 1)
-                cv2.circle(outimg, (getXcoord(contourPair.leftCon), getYcoord(contourPair.leftCon)), 10, (0,255,0), 2)
-                cv2.circle(outimg, (getXcoord(contourPair.rightCon), getYcoord(contourPair.rightCon)), 10, (0,255,0), 2)                                                                                                                                        
+                cv2.drawContours(outimg, np.array([contourPair.leftCon]), -1, (0, 0, 255), 1)
+                cv2.drawContours(outimg, np.array([contourPair.rightCon]), -1, (0, 0, 255), 1)
+                # cv2.circle(outimg, (getXcoord(contourPair.leftCon), getYcoord(contourPair.leftCon)), 10, (0,255,0), 2)
+                # cv2.circle(outimg, (getXcoord(contourPair.rightCon), getYcoord(contourPair.rightCon)), 10, (0,255,0), 2)                                                                                                                                        
 
         
         outframe.sendCvBGR(outimg)

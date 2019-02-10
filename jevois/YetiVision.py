@@ -92,29 +92,6 @@ class YetiVision:
         self.__filter_contours_contours = self.find_contours_output
         (self.filter_contours_output) = self.__filter_contours(self.__filter_contours_contours, self.__filter_contours_min_area, self.__filter_contours_min_perimeter, self.__filter_contours_min_width, self.__filter_contours_max_width, self.__filter_contours_min_height, self.__filter_contours_max_height, self.__filter_contours_solidity, self.__filter_contours_max_vertices, self.__filter_contours_min_vertices, self.__filter_contours_min_ratio, self.__filter_contours_max_ratio)
 
-        def getArea(con): # Gets the area of the contour
-            return cv2.contourArea(con)
-
-        def sortByArea(conts) : # Returns an array sorted by area from smallest to largest
-            contourNum = len(conts) # Gets number of contours
-            sortedBy = sorted(conts, key=getArea) # sortedBy now has all the contours sorted by area
-            return sortedBy
-        
-        def getXcoord(con): # Gets the X coordinate of the contour
-            M = cv2.moments(con)
-            try:
-                cy = int(M['m10']/M['m00'])
-            except ZeroDivisionError:
-                cy = 0
-            return cy
-        def getYcoord(con): # Gets the Y coordinate of the contour
-            M = cv2.moments(con)
-            try:
-                cy = int(M['m01']/M['m00'])
-            except ZeroDivisionError:
-                cy = 0
-            return cy
-
         def sortLeftToRight(contours):
             contourBoxes = []
             for contour in contours:
@@ -141,11 +118,6 @@ class YetiVision:
             sortedBoxA = sorted(contourA, key = lambda point: point[1])
             sortedBoxB = sorted(contourB, key = lambda point: point[1])
 
-            # jevois.sendSerial("{}|{}".format(sortedBoxA, sortedBoxB))
-
-            # cv2.drawContours(outimg,[boxA],0,(0,255,0),2)
-            # cv2.drawContours(outimg,[boxB],0,(0,255,0),2)
-
             if ((sortedBoxA[0][0] < sortedBoxB[0][0] and determineContourOrientation(contourA) == Contour.LEFT and determineContourOrientation(contourB) == Contour.RIGHT) or 
                 (sortedBoxB[0][0] < sortedBoxA[0][0] and determineContourOrientation(contourB) == Contour.LEFT and determineContourOrientation(contourA) == Contour.RIGHT)):
                 return True
@@ -170,39 +142,31 @@ class YetiVision:
 
         
         if len(self.filter_contours_output) > 1:
-            # jevois.sendSerial("{}".format(sortLeftToRight(self.filter_contours_output)))
-            leftContour, rightContour, *otherContours = sortLeftToRight(self.filter_contours_output)
-            # compareContours(leftContour, rightContour)
-            # jevois.sendSerial("{}|{}||{}".format(formatContour(leftContour), formatContour(rightContour), len(otherContours)))
-            # cv2.circle(outimg, (getXcoord(contourPair.leftCon), getYcoord(contourPair.rightCon)), 10, (0,255,0), 2)
-            # cv2.circle(outimg, (getXcoord(contourPair.leftCon), getYcoord(contourPair.rightCon)), 10, (0,255,0), 2)
+            contours = sortLeftToRight(self.filter_contours_output)
+            leftContour, rightContour, *_ = contours
             if (not (len(self.filter_contours_output) == 2 and not compareContours(leftContour, rightContour))):
                 contourPairs = []
 
                 if compareContours(leftContour, rightContour):
-                    contourPairs.append(ContourPair(leftContour, rightContour))
-                    if len(otherContours) % 2 == 1:
-                        otherContours.pop()
-                    for i in range(0, len(otherContours), 2):
-                        contourPairs.append(ContourPair(otherContours[i], otherContours[i + 1]))
+                    if len(contours) % 2 == 1:
+                        contours.pop()
+                    for i in range(0, len(contours), 2):
+                        contourPairs.append(ContourPair(contours[i], contours[i + 1]))
                 else:
-                    otherContours.pop(0)
-                    for i in range(0, len(otherContours), 2):
-                        contourPairs.append(ContourPair(otherContours[i], otherContours[i + 1]))
-                
-                
+                    contours.pop(0)
+                    if len(contours) % 2 == 1:
+                        contours.pop()
+                    for i in range(0, len(contours), 2):
+                        contourPairs.append(ContourPair(contours[i], contours[i + 1]))
 
                 sortedContours = sorted(contourPairs, key = lambda pair: abs((160 - getContourPairCenter(pair))))
-
                 contourPair = sortedContours[0]
 
                 message = "{}|{}".format(formatContour(contourPair.leftCon), formatContour(contourPair.rightCon))
             
                 jevois.sendSerial(message)
                 cv2.drawContours(outimg, np.array([contourPair.leftCon]), -1, (0, 0, 255), 1)
-                cv2.drawContours(outimg, np.array([contourPair.rightCon]), -1, (0, 0, 255), 1)
-                # cv2.circle(outimg, (getXcoord(contourPair.leftCon), getYcoord(contourPair.leftCon)), 10, (0,255,0), 2)
-                # cv2.circle(outimg, (getXcoord(contourPair.rightCon), getYcoord(contourPair.rightCon)), 10, (0,255,0), 2)                                                                                                                                        
+                cv2.drawContours(outimg, np.array([contourPair.rightCon]), -1, (0, 0, 255), 1)                                                                                                                                  
 
         
         outframe.sendCvBGR(outimg)

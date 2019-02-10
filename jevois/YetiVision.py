@@ -9,10 +9,14 @@ from enum import Enum
 
 
 
+class ContourPair:
+    def __init__(self, leftCon, rightCon):
+        self.leftCon = leftCon
+        self.rightCon = rightCon
+
 class Contour(Enum):
     LEFT = 1
     RIGHT = 2
-
 
 
 
@@ -35,24 +39,9 @@ class Contour(Enum):
 # @restrictions None
 # @ingroup modules
 class YetiVision:
-
-   
-
-
-    
-
-
-
     # ###################################################################################################
     ## Constructor
     def __init__(self):
-       
-        self.timer = jevois.Timer("CasseroleVisionStats", 25, jevois.LOG_DEBUG)
-        self.frame = 0
-        self.framerate_fps = "0"
-        self.frame_dec_factor = 6
-       
-
         self.__resize_image_width = 320.0
         self.__resize_image_height = 240.0
         self.__resize_image_interpolation = cv2.INTER_CUBIC
@@ -86,40 +75,11 @@ class YetiVision:
 
         self.filter_contours_output = None
 
-
-
-
-    # ###################################################################################################
-    ## Process function with only Serial output
-    def processNoUSB(self, inframe):
-        self.processCommon( inframe, None)
-        
-    # ###################################################################################################
-    ## Process function with USB Video output
     def process(self, inframe, outframe):
-        self.processCommon( inframe, outframe)
-
-
-    # ###################################################################################################
-    ## Process Common
-    def processCommon(self, inframe, outframe):
-        # Start measuring image processing time:
-        self.timer.start()
-
-        #No targets found yet
-        self.tgtAvailable = False
-        self.curTargets = []
-        
         #Capture image from camera
         inimg = inframe.getCvBGR()
         outimg = inframe.getCvBGR()
-        self.frame += 1
 
-        #Mark start of pipeline time
-        pipline_start_time = datetime.now()
-
-        # hsv = cv2.cvtColor(inimg, cv2.COLOR_BGR2HSV)
-        # hsv_max = cv2.inRange(hsv, self.hsv_threshold_min, self.hsv_threshold_max)
         # Step HSV_Threshold0:
         self.__hsv_threshold_input = inimg
         (self.hsv_threshold_output) = self.__hsv_threshold(self.__hsv_threshold_input, self.__hsv_threshold_hue, self.__hsv_threshold_saturation, self.__hsv_threshold_value)
@@ -135,6 +95,18 @@ class YetiVision:
         def getArea(con): # Gets the area of the contour
             return cv2.contourArea(con)
 
+        def sortByArea(conts) : # Returns an array sorted by area from smallest to largest
+            contourNum = len(conts) # Gets number of contours
+            sortedBy = sorted(conts, key=getArea) # sortedBy now has all the contours sorted by area
+            return sortedBy
+        
+        def getXcoord(con): # Gets the X coordinate of the contour
+            M = cv2.moments(con)
+            try:
+                cy = int(M['m10']/M['m00'])
+            except ZeroDivisionError:
+                cy = 0
+            return cy
         def getYcoord(con): # Gets the Y coordinate of the contour
             M = cv2.moments(con)
             try:
@@ -143,119 +115,89 @@ class YetiVision:
                 cy = 0
             return cy
 
-        def getXcoord(con): # Gets the X coordinate of the contour
-            M = cv2.moments(con)
-            try:
-                cy = int(M['m10']/M['m00'])
-            except ZeroDivisionError:
-                cy = 0
-            return cy
-
-        def sortByArea(conts) : # Returns an array sorted by area from smallest to largest
-            contourNum = len(conts) # Gets number of contours
-            sortedBy = sorted(conts, key=getArea) # sortedBy now has all the contours sorted by area
-            return sortedBy
+        def sortLeftToRight(contours):
+            return sorted(contours, key = lambda contour: getXcoord(contour))
 
         def determineContourOrientation(contour):
             rect = cv2.minAreaRect(contour)
             box = cv2.boxPoints(rect)
             box = np.int0(box)
-            sortedBox = sorted(box, key = lambda point: point[1])
+            sortedBox = sorted(box, key = lambda point: point[0])
 
-            topPoint = sortedBox[0]
-            bottomPoint = sortedBox[3]
+            leftPoint = sortedBox[0]
+            rightPoint = sortedBox[3]
 
-            if (topPoint[0] > bottomPoint[0]):
+            if leftPoint[0] > rightPoint[1]:
                 return Contour.RIGHT
             else:
                 return Contour.LEFT
-
-
-
 
     # make a function to compare 2 contours and return whether they're pairs
         def compareContours(contourA, contourB):
             rectA = cv2.minAreaRect(contourA)
             boxA = cv2.boxPoints(rectA)
             boxA = np.int0(boxA)
-            sortedBoxA = sorted(boxA, key = lambda point: point[0])
+            sortedBoxA = sorted(boxA, key = lambda point: point[1])
             rectB = cv2.minAreaRect(contourB)
             boxB = cv2.boxPoints(rectB)
             boxB = np.int0(boxB)
-            sortedBoxB = sorted(boxB, key = lambda point: point[0])
+            sortedBoxB = sorted(boxB, key = lambda point: point[1])
 
-            if ((sortedBoxA[0][0] < sortedBoxB[0][0] and determineContourOrientation(contourA) == Contour.LEFT and determineContourOrientation(contourB) == Contour.RIGHT) or 
-                (sortedBoxB[0][0] < sortedBoxA[0][0] and determineContourOrientation(contourB) == Contour.LEFT and determineContourOrientation(contourA) == Contour.RIGHT)):
+            cv2.drawContours(outimg,[boxA],0,(0,255,0),2)
+            cv2.drawContours(outimg,[boxB],0,(0,255,0),2)
+
+            if (sortedBoxA[0][0] < sortedBoxB[0][0] and determineContourOrientation(contourA) == Contour.LEFT and determineContourOrientation(contourB) == Contour.RIGHT) or 
+                (sortedBoxB[0][0] < sortedBoxA[0][0] and determineContourOrientation(contourB) == Contour.LEFT and determineContourOrientation(contourA) == Contour.RIGHT):
                 return True
             else:
                 return False
 
+        def getContourPairCenter(contourPair):
+            return (getXcoord(contourPair.leftCon) + getXcoord(contourPair.rightCon)) / 2
         
+        def formatContour(contour):
+            x,y,w,h = cv2.boundingRect(contour) # Get the stats of the contour including width and height
         
-        #Draws all contours on original image in red
-        
-        
-        # Gets number of contours
-        contourNum = len(self.filter_contours_output)
-
-        # Sorts contours by the smallest area first
-        newContours = sortByArea(self.filter_contours_output)
-
-        
-
-        # if contourNum == 3
-        #       get rotated rectangles
-        #       figure out the correct pair
-        #       discard the odd one out
-        #       continue
-
-        message = ""
-
-        if (contourNum == 3):
+            area = str(getArea(contour))
+            x = str(x)
+            y = str(y)
+            h = str(h)
+            w = str(w)
             
-            if (compareContours(newContours[0], newContours[1])):
-                message = message + "Left Pair: "
-                newContours.pop(2)
-            else:
-                message = message + "Right Pair: "
-                newContours.pop(0)
-            contourNum = 2
-
-
-
-
-
+            return "{},{},{},{},{}".format(area, x, y, h, w)
         
-        
-        # Send the contour data over Serial
-        if(contourNum == 2):
-            # message = ""
-            # if (compareContours(newContours[0], newContours[1])):
-            #     message = message + "T: "
-            # else:
-            #     message = message + "F: "
-            for i in range (contourNum):
-                cnt = newContours[i]
-                x,y,w,h = cv2.boundingRect(cnt) # Get the stats of the contour including width and height
+        if len(self.filter_contours_output) > 1:
+            leftContour, rightContour, *otherContours = sortLeftToRight(self.filter_contours_output)
+            # compareContours(leftContour, rightContour)
+            jevois.sendSerial("{}|{}".format(formatContour(leftContour), formatContour(rightContour)))
+            # cv2.circle(outimg, (getXcoord(contourPair.leftCon), getYcoord(contourPair.rightCon)), 10, (0,255,0), 2)
+            # cv2.circle(outimg, (getXcoord(contourPair.leftCon), getYcoord(contourPair.rightCon)), 10, (0,255,0), 2)
+            if (not (len(self.filter_contours_output) == 2 and not compareContours(leftContour, rightContour))):
+                contourPairs = []
+
+                if compareContours(leftContour, rightContour):
+                    contourPairs.append(ContourPair(leftContour, rightContour))
+                    if len(otherContours) % 2 == 1:
+                        otherContours.pop()
+                    for i in range(0, len(otherContours), 2):
+                        contourPairs.append(ContourPair(otherContours[i], otherContours[i + 1]))
+                else:
+                    otherContours.pop(0)
+                    for i in range(0, len(otherContours), 2):
+                        contourPairs.append(ContourPair(otherContours[i], otherContours[i + 1]))
+                
+                sortedContours = sorted(contourPairs, key = lambda pair: abs((160 - getContourPairCenter(pair))))
+
+                contourPair = sortLeftToRight(sortedContours)[0]
+
+                message = "{}|{}".format(formatContour(contourPair.leftCon), formatContour(contourPair.rightCon))
             
-                area = str(getArea(cnt))
-                # x = str(round((getXcoord(cnt)*1000/320)-500, 2))
-                # y = str(round(375-getYcoord(cnt)*750/240, 2))
-                # h = str(round(h*750/240, 2))
-                # w = str(round(w*1000/320, 2)))
-                x = str(x)
-                y = str(y)
-                h = str(h)
-                w = str(w)
+                jevois.sendSerial(message)
+                cv2.drawContours(outimg, [contourPair.leftCon], -1, (0, 0, 255), 1)
+                cv2.drawContours(outimg, [contourPair.rightCon], -1, (0, 0, 255), 1)
+                cv2.circle(outimg, (getXcoord(contourPair.leftCon), getYcoord(contourPair.leftCon)), 10, (0,255,0), 2)
+                cv2.circle(outimg, (getXcoord(contourPair.rightCon), getYcoord(contourPair.rightCon)), 10, (0,255,0), 2)
 
-                message = message + "{},{},{},{},{}".format(area, x, y, h, w)
-                if (i + 1 < contourNum):
-                    message = message + "|"
-
-        
-            jevois.sendSerial(message)    
-
-            cv2.drawContours(outimg, self.filter_contours_output, -1, (0, 0, 255), 1)        
         
         outframe.sendCvBGR(outimg)
         

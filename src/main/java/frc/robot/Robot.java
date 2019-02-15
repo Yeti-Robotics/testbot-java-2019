@@ -47,7 +47,6 @@ public class Robot extends TimedRobot {
   // Instantiates the subsystems
   public static DrivetrainSubsystem drivetrainSubsystem;
   public static ShiftGearsSubsystem shiftGearsSubsystem;
-  public static DriverStation driverStation;
   public static HatchPanelSubsystem hatchPanelSubsystem;
   public static ElevatorSubsystem elevatorSubsystem;
   public static WristSubsystem wristSubsystem;
@@ -69,7 +68,7 @@ public class Robot extends TimedRobot {
     hatchPanelSubsystem = new HatchPanelSubsystem();
     drivetrainSubsystem = new DrivetrainSubsystem();
     shiftGearsSubsystem = new ShiftGearsSubsystem();
-    driverStation = DriverStation.getInstance();
+
     jevois = new JeVois();
     oi = new OI();
 
@@ -126,7 +125,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
 
-    // System.out.println(jevois.getLeftDistance() + "," + jevois.getRightDistance());
+    System.out.println(jevois.getLeftDistance() + "," + jevois.getRightDistance());
     SmartDashboard.putNumber("Left Encoder Rate", drivetrainSubsystem.getLeftEncoderRate());
     SmartDashboard.putNumber("Right Encoder Rate", drivetrainSubsystem.getRightEncoderRate());
     SmartDashboard.putNumber("Left Line Follower Voltage", drivetrainSubsystem.lineSensorLeft.getAverageVoltage());

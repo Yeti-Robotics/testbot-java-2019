@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import edu.wpi.first.wpilibj.command.PIDSubsystem;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
@@ -23,7 +24,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.analog.adis16448.frc.ADIS16448_IMU;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
-public class DrivetrainSubsystem extends Subsystem {
+public class DrivetrainSubsystem extends PIDSubsystem {
 
     private Spark left1, left2, right1, right2;
     private CustomTalon leftTal, rightTal;
@@ -39,6 +40,8 @@ public class DrivetrainSubsystem extends Subsystem {
 
     public DrivetrainSubsystem() {
 
+        super(0.25, 0, 0);
+
         left1 = new Spark(RobotMap.LEFT_1_SPARK);
         left2 = new Spark(RobotMap.LEFT_2_SPARK);
         right1 = new Spark(RobotMap.Right_1_SPARK);
@@ -48,6 +51,7 @@ public class DrivetrainSubsystem extends Subsystem {
         gyro = new ADXRS450_Gyro();
         gyro.calibrate();
         SmartDashboard.putData(gyro);
+        setAbsoluteTolerance(5);
         
 
         SpeedControllerGroup leftSparks = new SpeedControllerGroup(left1, left2, leftTal);
@@ -79,6 +83,8 @@ public class DrivetrainSubsystem extends Subsystem {
         SmartDashboard.putNumber("Right drive distance", getRightEncoderValue());
 
         driveMode = DriveMode.TANK;
+
+        setOutputRange(-0.8, 0.8);
 
     }
     
@@ -163,6 +169,17 @@ public class DrivetrainSubsystem extends Subsystem {
 
     public double getRightEncoderRate() {
         return rightEnc.getRate();
+    }
+
+    @Override
+    protected double returnPIDInput() {
+        return getAvgEncoderDistance();
+    }
+
+    @Override
+    protected void usePIDOutput(double output) {
+        moveDriveTrainLeft(-output);
+        moveDriveTrainRight(-output);
     }
 
 };

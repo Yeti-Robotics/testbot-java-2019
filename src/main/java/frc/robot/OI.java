@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.commands.DeployHatchPanelCommandGroup;
 import frc.robot.commands.DriveForDistanceCommand;
+import frc.robot.commands.DriveForDistancePIDCommand;
+import frc.robot.commands.DriveToHatchPanelCommandGroup;
 import frc.robot.commands.DriveTrainHighShiftCommand;
 import frc.robot.commands.DriveTrainLowShiftCommand;
 import frc.robot.commands.LineFollowCommand;
@@ -43,7 +45,7 @@ public class OI {
 
     // Secondary Joystick Buttons
     setJoystickButtonWhenPressedCommand(secondaryJoy, 1, new DeployHatchPanelCommandGroup());
-    setJoystickButtonWhenPressedCommand(secondaryJoy, 2, new RunVisionThreadCommand());
+    setJoystickButtonWhenPressedCommand(driverstationJoy, 2, new DriveForDistancePIDCommand(120));
     setJoystickButtonWhenPressedCommand(secondaryJoy, 1, new LineFollowCommand());
     setJoystickButtonWhenPressedCommand(secondaryJoy, 5, new ResetEncodersCommand());
     // setJoystickButtonWhenPressedCommand(secondaryJoy, 4, new CorrectAzimuthCommand());
@@ -52,6 +54,7 @@ public class OI {
     setJoystickButtonWhenPressedCommand(secondaryJoy, 8, new TurnToTargetCommandGroup());
     setJoystickButtonWhenPressedCommand(secondaryJoy, 11, new DriveTrainLowShiftCommand());
     setJoystickButtonWhenPressedCommand(secondaryJoy, 12, new DriveTrainHighShiftCommand());
+    setJoystickButtonWhenPressedCommand(driverstationJoy, 3, new DriveToHatchPanelCommandGroup());
   }
 
   // Gets the Y direction of the left drive joystick

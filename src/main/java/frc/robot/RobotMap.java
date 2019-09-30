@@ -37,7 +37,7 @@ public class RobotMap {
   
   // Drive train talons
   public static final int LEFT_Drive_TALON = 5;
-  public static final int RIGHT_Drive_TALON = 6;
+  public static final int RIGHT_Drive_TALON = 10;
 
   public static final int ELEVATOR_TALON = 7;
   public static final double ELEVATOR_TAL_SPEED = 0.7;

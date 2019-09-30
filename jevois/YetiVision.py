@@ -144,7 +144,7 @@ class YetiVision:
         if len(self.filter_contours_output) > 1:
             contours = sortLeftToRight(self.filter_contours_output)
             leftContour, rightContour, *_ = contours
-            if (not (len(self.filter_contours_output) == 2 and not compareContours(leftContour, rightContour))):
+            if (not (len(self.filter_contours_output) == 2 and not compareContours(leftContour, rightContour))): 
                 contourPairs = []
 
                 if compareContours(leftContour, rightContour):

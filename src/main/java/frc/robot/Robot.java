@@ -31,6 +31,7 @@ import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.HatchPanelSubsystem;
 import frc.robot.subsystems.ShiftGearsSubsystem;
+import frc.robot.subsystems.TurretSubsystem;
 import frc.robot.subsystems.WristSubsystem;
 
 /**
@@ -50,6 +51,7 @@ public class Robot extends TimedRobot {
   public static HatchPanelSubsystem hatchPanelSubsystem;
   public static ElevatorSubsystem elevatorSubsystem;
   public static WristSubsystem wristSubsystem;
+  public static TurretSubsystem turretSubsystem;
   public static boolean runVisionThread = false;
   public static JeVois jevois;
   public static List<Contour[]> contourList = new ArrayList<>();
@@ -68,33 +70,37 @@ public class Robot extends TimedRobot {
     hatchPanelSubsystem = new HatchPanelSubsystem();
     drivetrainSubsystem = new DrivetrainSubsystem();
     shiftGearsSubsystem = new ShiftGearsSubsystem();
+    turretSubsystem = new TurretSubsystem();
 
-    jevois = new JeVois();
+    // jevois = new JeVois();
     oi = new OI();
 
     UsbCamera driveCamera = CameraServer.getInstance().startAutomaticCapture(0);
     driveCamera.setVideoMode(VideoMode.PixelFormat.kYUYV, 320, 240, 30);
 
-    new Timer().scheduleAtFixedRate(new TimerTask(){
-      long lastLoop = System.currentTimeMillis();
+    // new Timer().scheduleAtFixedRate(new TimerTask(){
+    //   long lastLoop = System.currentTimeMillis();
     
-      @Override
-      public void run() {
-          Contour[] contours = jevois.parseStream();
-          if (contours != null) {
-            contourList.add(contours);
-            latestContours = contours;
-            // System.out.println(Arrays.toString(latestContours));
-            if (contourList.size() > 10){
-              contourList.remove(0);
-            }
-            lastLoop = System.currentTimeMillis();
-          }
-          if (System.currentTimeMillis() - lastLoop > 3000) {
-            latestContours = null;
-          }
-      }
-    }, 20L, 20L);
+    //   @Override
+    //   public void run() {
+    //       Contour[] contours = jevois.parseStream();
+    //       if (contours != null) {
+    //         contourList.add(contours);
+    //         latestContours = contours;
+    //         // System.out.println(Arrays.toString(latestContours));
+    //         if (contourList.size() > 10){
+    //           contourList.remove(0);
+    //         }
+    //         lastLoop = System.currentTimeMillis();
+    //       }
+    //       if (System.currentTimeMillis() - lastLoop > 3000) {
+    //         latestContours = null;
+    //       }
+    //   }
+    // }, 20L, 20L);
+
+    turretSubsystem.resetEncoder();
+
     
     m_chooser.setDefaultOption("Default Auto", new UserDriveCommand());
     // chooser.addOption("My Auto", new MyAutoCommand());
@@ -103,13 +109,13 @@ public class Robot extends TimedRobot {
 
   public static void enableVision() {
     // synchronized (imgLock) {
-      runVisionThread = true;
+      // runVisionThread = true;
     // }
   }
 
   public static void disableVision() {
     // synchronized (imgLock) {
-      runVisionThread = false;
+      // runVisionThread = false;
     // }
   }
 
@@ -124,13 +130,13 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-
-    System.out.println(jevois.getLeftDistance() + "," + jevois.getRightDistance());
+    // System.out.println(jevois.getLeftDistance() + "," + jevois.getRightDistance());
     SmartDashboard.putNumber("Left Encoder Rate", drivetrainSubsystem.getLeftEncoderRate());
     SmartDashboard.putNumber("Right Encoder Rate", drivetrainSubsystem.getRightEncoderRate());
     SmartDashboard.putNumber("Left Line Follower Voltage", drivetrainSubsystem.lineSensorLeft.getAverageVoltage());
     SmartDashboard.putNumber("Center Line Follower Voltage", drivetrainSubsystem.lineSensorCenter.getAverageVoltage());
     SmartDashboard.putNumber("Right Line Follower Voltage", drivetrainSubsystem.lineSensorRight.getAverageVoltage());
+    SmartDashboard.putNumber("Current Turret Angle", turretSubsystem.getTurretAngleX());
     // SmartDashboard.putNumber("Left Distance", jevois.getLeftDistance());
   }
 

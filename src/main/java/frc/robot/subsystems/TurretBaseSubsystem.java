@@ -16,11 +16,11 @@ import frc.robot.controls.CustomTalon;
 /**
  * An example subsystem.  You can replace me with your own Subsystem.
  */
-public class TurretSubsystem extends Subsystem {
+public class TurretBaseSubsystem extends Subsystem {
 
     private CustomTalon turretTal;
 
-    public TurretSubsystem() {
+    public TurretBaseSubsystem() {
         turretTal = new CustomTalon(6);
         turretTal.setInverted(true);
         turretTal.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
@@ -30,14 +30,14 @@ public class TurretSubsystem extends Subsystem {
     turretTal.setSelectedSensorPosition(0);
   }
 
-  public double getTurretAngleX() {
+  public double getTurretAngle() {
     double encoderRatio = 1287.6828;
     double currentArcLength = turretTal.getSelectedSensorPosition() / encoderRatio;
     double currentAngleDegrees = (currentArcLength / 8) * (180 / Math.PI);
-    return currentAngleDegrees;
+    return Math.abs(currentAngleDegrees);
   }
 
-  public void moveTurretX(double angle) {
+  public void moveTurret(double angle) {
     if (angle > 0) {
       turretTal.set(ControlMode.PercentOutput, 1.0);
     } else {

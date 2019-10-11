@@ -31,7 +31,7 @@ import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.HatchPanelSubsystem;
 import frc.robot.subsystems.ShiftGearsSubsystem;
-import frc.robot.subsystems.TurretSubsystem;
+import frc.robot.subsystems.TurretBaseSubsystem;
 import frc.robot.subsystems.WristSubsystem;
 
 /**
@@ -51,7 +51,7 @@ public class Robot extends TimedRobot {
   public static HatchPanelSubsystem hatchPanelSubsystem;
   public static ElevatorSubsystem elevatorSubsystem;
   public static WristSubsystem wristSubsystem;
-  public static TurretSubsystem turretSubsystem;
+  public static TurretBaseSubsystem turretBaseSubsystem;
   public static boolean runVisionThread = false;
   public static JeVois jevois;
   public static List<Contour[]> contourList = new ArrayList<>();
@@ -70,7 +70,7 @@ public class Robot extends TimedRobot {
     hatchPanelSubsystem = new HatchPanelSubsystem();
     drivetrainSubsystem = new DrivetrainSubsystem();
     shiftGearsSubsystem = new ShiftGearsSubsystem();
-    turretSubsystem = new TurretSubsystem();
+    turretBaseSubsystem = new TurretBaseSubsystem();
 
     // jevois = new JeVois();
     oi = new OI();
@@ -99,7 +99,7 @@ public class Robot extends TimedRobot {
     //   }
     // }, 20L, 20L);
 
-    turretSubsystem.resetEncoder();
+    turretBaseSubsystem.resetEncoder();
 
     
     m_chooser.setDefaultOption("Default Auto", new UserDriveCommand());
@@ -136,7 +136,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Left Line Follower Voltage", drivetrainSubsystem.lineSensorLeft.getAverageVoltage());
     SmartDashboard.putNumber("Center Line Follower Voltage", drivetrainSubsystem.lineSensorCenter.getAverageVoltage());
     SmartDashboard.putNumber("Right Line Follower Voltage", drivetrainSubsystem.lineSensorRight.getAverageVoltage());
-    SmartDashboard.putNumber("Current Turret Angle", turretSubsystem.getTurretAngleX());
+    SmartDashboard.putNumber("Current Turret Angle", turretBaseSubsystem.getTurretAngle());
     // SmartDashboard.putNumber("Left Distance", jevois.getLeftDistance());
   }
 
